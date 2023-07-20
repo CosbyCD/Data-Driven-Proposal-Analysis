@@ -1,0 +1,947 @@
+###
+##	CYCLISTIC DATA ANALYSIS
+##  CHERRIE COSBY
+##  07.12.2023
+##	SQL QUERY SCRIPTS - POSTGRESQL 15 / PGADMIN 4
+###
+
+
+###
+## LOADING AND COMBINING DATA************************************************************************************************************
+###
+
+## creating the tables (files 1-12)
+
+CREATE TABLE cyclistic_data_12 (
+	ride_id text,
+	rideable_type text,
+	started_at timestamp,
+	ended_at timestamp,
+	start_station_name text,
+	start_station_id text,
+	end_station_name text,
+	end_station_id text,
+	start_lat decimal,
+	start_lng decimal,
+	end_lat decimal,
+	end_lng decimal,
+	member_casual text,
+	ride_length text,
+	day_of_week integer,
+	name_of_day text
+  );
+ 
+### 
+## loading the 12 data files into their respective tables
+ 
+COPY cyclistic_data_1 FROM 'D:/Working_Files/202201-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_2 FROM 'D:/Working_Files/202202-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_3 FROM 'D:/Working_Files/202203-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_4 FROM 'D:/Working_Files/202204-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_5 FROM 'D:/Working_Files/202205-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_6 FROM 'D:/Working_Files/202206-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_7 FROM 'D:/Working_Files/202207-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_8 FROM 'D:/Working_Files/202208-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_9 FROM 'D:/Working_Files/202209-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_10 FROM 'D:/Working_Files/202210-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_11 FROM 'D:/Working_Files/202211-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+COPY cyclistic_data_12 FROM 'D:/Working_Files/202212-divvy-tripdata.csv' DELIMITER ',' CSV HEADER;
+
+
+###
+## combining all twelve files into one
+
+DROP TABLE IF EXISTS combined_data;
+
+CREATE TABLE combined_data AS
+
+SELECT * 
+FROM cyclistic_data_1
+UNION ALL
+SELECT *
+FROM cyclistic_data_2
+UNION ALL
+SELECT *
+FROM cyclistic_data_3
+UNION ALL
+SELECT *
+FROM cyclistic_data_4
+UNION ALL
+SELECT *
+FROM cyclistic_data_5
+UNION ALL
+SELECT *
+FROM cyclistic_data_6
+UNION ALL
+SELECT *
+FROM cyclistic_data_7
+UNION ALL
+SELECT *
+FROM cyclistic_data_8
+UNION ALL
+SELECT *
+FROM cyclistic_data_9
+UNION ALL
+SELECT *
+FROM cyclistic_data_10
+UNION ALL
+SELECT *
+FROM cyclistic_data_11
+UNION ALL
+SELECT *
+FROM cyclistic_data_12;
+
+
+
+
+###
+## DATA CLEANING and ERROR REPORTING*****************************************************************************************************************************************************************************************************************************
+###
+
+
+###
+## changing data type to number since it imported as text
+
+ALTER TABLE combined_data
+ALTER COLUMN ride_length SET DATA TYPE NUMERIC
+USING ride_length::NUMERIC;
+
+
+
+###
+## checking for duplicate records
+
+SELECT ride_id, started_at, COUNT(*)
+FROM combined_data
+GROUP BY ride_id, started_at
+HAVING COUNT(*) > 1;   
+
+
+###
+## getting count of total records, records with errors, error percentage
+
+SELECT
+    COUNT(*) AS total_records,
+    SUM(
+        (ride_id IS NULL OR ride_id = '' OR ride_id = ' ')::int +
+        (rideable_type IS NULL OR rideable_type = '' OR rideable_type = ' ')::int +
+        (started_at IS NULL)::int +
+        (ended_at IS NULL)::int +
+        (start_station_name IS NULL OR start_station_name = '' OR start_station_name = ' ')::int +
+        (start_station_id IS NULL OR start_station_id = '' OR start_station_id = ' ')::int +
+        (end_station_name IS NULL OR end_station_name = '' OR end_station_name = ' ')::int +
+        (end_station_id IS NULL OR end_station_id = '' OR end_station_id = ' ')::int +
+        (start_lat IS NULL)::int +
+        (start_lng IS NULL)::int +
+        (end_lat IS NULL)::int +
+        (end_lng IS NULL)::int +
+        (member_casual IS NULL OR member_casual = '' OR member_casual = ' ')::int +
+        (ride_length IS NULL)::int +
+        (day_of_week IS NULL)::int +
+        (name_of_day IS NULL)::int
+    ) AS total_null_records,
+    (SUM(
+        (ride_id IS NULL OR ride_id = '' OR ride_id = ' ')::int +
+        (rideable_type IS NULL OR rideable_type = '' OR rideable_type = ' ')::int +
+        (started_at IS NULL)::int +
+        (ended_at IS NULL)::int +
+        (start_station_name IS NULL OR start_station_name = '' OR start_station_name = ' ')::int +
+        (start_station_id IS NULL OR start_station_id = '' OR start_station_id = ' ')::int +
+        (end_station_name IS NULL OR end_station_name = '' OR end_station_name = ' ')::int +
+        (end_station_id IS NULL OR end_station_id = '' OR end_station_id = ' ')::int +
+        (start_lat IS NULL)::int +
+        (start_lng IS NULL)::int +
+        (end_lat IS NULL)::int +
+        (end_lng IS NULL)::int +
+        (member_casual IS NULL OR member_casual = '' OR member_casual = ' ')::int +
+        (ride_length IS NULL)::int +
+        (day_of_week IS NULL)::int +
+        (name_of_day IS NULL)::int
+    )::float / COUNT(*) * 100) AS error_percentage
+FROM
+    combined_data;
+
+###	
+## getting error count per column
+
+SELECT
+    COUNT(*) AS total_records,
+    COUNT(*) FILTER (WHERE ride_id IS NULL OR ride_id = '' OR ride_id = ' ') AS null_count_ride_id,
+    COUNT(*) FILTER (WHERE rideable_type IS NULL OR rideable_type = '' OR rideable_type = ' ') AS null_count_rideable_type,
+    COUNT(*) FILTER (WHERE started_at IS NULL) AS null_count_started_at,
+    COUNT(*) FILTER (WHERE ended_at IS NULL) AS null_count_ended_at,
+    COUNT(*) FILTER (WHERE start_station_name IS NULL OR start_station_name = '' OR start_station_name = ' ') AS null_count_start_station_name,
+    COUNT(*) FILTER (WHERE start_station_id IS NULL OR start_station_id = '' OR start_station_id = ' ') AS null_count_start_station_id,
+    COUNT(*) FILTER (WHERE end_station_name IS NULL OR end_station_name = '' OR end_station_name = ' ') AS null_count_end_station_name,
+    COUNT(*) FILTER (WHERE end_station_id IS NULL OR end_station_id = '' OR end_station_id = ' ') AS null_count_end_station_id,
+    COUNT(*) FILTER (WHERE start_lat IS NULL) AS null_count_start_lat,
+    COUNT(*) FILTER (WHERE start_lng IS NULL) AS null_count_start_lng,
+    COUNT(*) FILTER (WHERE end_lat IS NULL) AS null_count_end_lat,
+    COUNT(*) FILTER (WHERE end_lng IS NULL) AS null_count_end_lng,
+    COUNT(*) FILTER (WHERE member_casual IS NULL OR member_casual = '' OR member_casual = ' ') AS null_count_member_casual,
+    COUNT(*) FILTER (WHERE ride_length IS NULL) AS null_count_ride_length,
+    COUNT(*) FILTER (WHERE day_of_week IS NULL) AS null_count_day_of_week,
+    COUNT(*) FILTER (WHERE name_of_day IS NULL) AS null_count_name_of_day
+FROM
+    combined_data;
+	
+###	
+## getting breakout of error count per month, per column
+
+SELECT 
+    COUNT(*) AS total_null_records,
+    EXTRACT(MONTH FROM started_at) AS month,
+    COUNT(*) FILTER (WHERE ride_id IS NULL OR ride_id = '' OR ride_id = ' ') AS null_count_ride_id,
+    COUNT(*) FILTER (WHERE rideable_type IS NULL OR rideable_type = '' OR rideable_type = ' ') AS null_count_rideable_type,
+    COUNT(*) FILTER (WHERE started_at IS NULL) AS null_count_started_at,
+    COUNT(*) FILTER (WHERE ended_at IS NULL) AS null_count_ended_at,
+    COUNT(*) FILTER (WHERE start_station_name IS NULL OR start_station_name = '' OR start_station_name = ' ') AS null_count_start_station_name,
+    COUNT(*) FILTER (WHERE start_station_id IS NULL OR start_station_id = '' OR start_station_id = ' ') AS null_count_start_station_id,
+    COUNT(*) FILTER (WHERE end_station_name IS NULL OR end_station_name = '' OR end_station_name = ' ') AS null_count_end_station_name,
+    COUNT(*) FILTER (WHERE end_station_id IS NULL OR end_station_id = '' OR end_station_id = ' ') AS null_count_end_station_id,
+    COUNT(*) FILTER (WHERE start_lat IS NULL) AS null_count_start_lat,
+    COUNT(*) FILTER (WHERE start_lng IS NULL) AS null_count_start_lng,
+    COUNT(*) FILTER (WHERE end_lat IS NULL) AS null_count_end_lat,
+    COUNT(*) FILTER (WHERE end_lng IS NULL) AS null_count_end_lng,
+    COUNT(*) FILTER (WHERE member_casual IS NULL OR member_casual = '' OR member_casual = ' ') AS null_count_member_casual,
+    COUNT(*) FILTER (WHERE ride_length IS NULL) AS null_count_ride_length,
+    COUNT(*) FILTER (WHERE day_of_week IS NULL) AS null_count_day_of_week,
+    COUNT(*) FILTER (WHERE name_of_day IS NULL) AS null_count_name_of_day
+FROM 
+    combined_data
+GROUP BY 
+    EXTRACT(MONTH FROM started_at)
+ORDER BY month;
+
+
+
+###
+## creating a backup table
+
+CREATE TABLE combined_data_backup AS
+SELECT * FROM combined_data;
+
+
+
+###
+##	GATHERING DATA FOR ERROR REPORTING***************************************
+###
+
+###
+## this query creates a new table called records_with_errors and inserts the records from the combined_data table that have null values
+## in any of the specified columns including the empty strings ('') and trailing whitespace (' ') as null values. 
+
+CREATE TABLE records_with_errors AS
+SELECT *
+FROM combined_data
+WHERE
+    ride_id IS NULL OR ride_id = '' OR TRIM(ride_id) = '' OR
+    rideable_type IS NULL OR rideable_type = '' OR TRIM(rideable_type) = '' OR
+    started_at IS NULL OR
+    ended_at IS NULL OR
+    start_station_name IS NULL OR start_station_name = '' OR TRIM(start_station_name) = '' OR
+    start_station_id IS NULL OR start_station_id = '' OR TRIM(start_station_id) = '' OR
+    end_station_name IS NULL OR end_station_name = '' OR TRIM(end_station_name) = '' OR
+    end_station_id IS NULL OR end_station_id = '' OR TRIM(end_station_id) = '' OR
+    start_lat IS NULL OR
+    start_lng IS NULL OR
+    end_lat IS NULL OR
+    end_lng IS NULL OR
+    member_casual IS NULL OR member_casual = '' OR TRIM(member_casual) = '' OR
+    ride_length IS NULL OR
+    day_of_week IS NULL OR
+    name_of_day IS NULL;
+	
+###
+## ERROR REPORTS
+###
+
+
+
+###
+## count of records with errors
+
+SELECT count(*)
+FROM records_with_errors
+
+
+###
+## number of errors - member casual
+
+SELECT
+    member_casual,
+    COUNT(*) AS error_count
+FROM
+    records_with_errors
+WHERE
+    (ride_id IS NULL OR ride_id = '' OR TRIM(ride_id) = '' OR
+    rideable_type IS NULL OR rideable_type = '' OR TRIM(rideable_type) = '' OR
+    started_at IS NULL OR
+    ended_at IS NULL OR
+    start_station_name IS NULL OR start_station_name = '' OR TRIM(start_station_name) = '' OR
+    start_station_id IS NULL OR start_station_id = '' OR TRIM(start_station_id) = '' OR
+    end_station_name IS NULL OR end_station_name = '' OR TRIM(end_station_name) = '' OR
+    end_station_id IS NULL OR end_station_id = '' OR TRIM(end_station_id) = '' OR
+    start_lat IS NULL OR
+    start_lng IS NULL OR
+    end_lat IS NULL OR
+    end_lng IS NULL OR
+    member_casual IS NULL OR member_casual = '' OR TRIM(member_casual) = '' OR
+    ride_length IS NULL OR
+    day_of_week IS NULL OR
+    name_of_day IS NULL)
+GROUP BY
+    member_casual;
+
+   
+###
+## count of bike types with errors
+
+SELECT rideable_type, count(*)
+FROM records_with_errors
+GROUP BY rideable_type	
+
+###
+## ***************************************************************************
+###
+
+
+
+###
+## deleting records with errors from combined_data (working table)
+
+DELETE FROM combined_data
+WHERE
+    ride_id IS NULL OR ride_id = '' OR TRIM(ride_id) = '' OR
+    rideable_type IS NULL OR rideable_type = '' OR TRIM(rideable_type) = '' OR
+    started_at IS NULL OR
+    ended_at IS NULL OR
+    start_station_name IS NULL OR start_station_name = '' OR TRIM(start_station_name) = '' OR
+    start_station_id IS NULL OR start_station_id = '' OR TRIM(start_station_id) = '' OR
+    end_station_name IS NULL OR end_station_name = '' OR TRIM(end_station_name) = '' OR
+    end_station_id IS NULL OR end_station_id = '' OR TRIM(end_station_id) = '' OR
+    start_lat IS NULL OR
+    start_lng IS NULL OR
+    end_lat IS NULL OR
+    end_lng IS NULL OR
+    member_casual IS NULL OR member_casual = '' OR TRIM(member_casual) = '' OR
+    ride_length IS NULL OR
+    day_of_week IS NULL OR
+    name_of_day IS NULL;
+
+
+###
+##
+ getting total number of remaining records without errors
+
+SELECT count(*)
+FROM combined_data
+
+
+### RETURNING TO ANALYSIS**************************************************************************************************************************************************************************************************************
+
+
+###
+## STATISTICAL ANALYSIS OF DATA SET
+###
+
+#### RIDER STATS
+###
+## member and casual-user stats - year 2022
+
+SELECT
+    year,
+    member_count,
+    casual_count,
+    ROUND(((member_count - casual_count)::numeric / member_count) * 100, 2) AS percentage_difference
+FROM (
+    SELECT
+        EXTRACT(YEAR FROM started_at) AS year,
+        COUNT(*) FILTER (WHERE member_casual = 'member' AND EXTRACT(YEAR FROM started_at) = 2022) AS member_count,
+        COUNT(*) FILTER (WHERE member_casual = 'casual' AND EXTRACT(YEAR FROM started_at) = 2022) AS casual_count
+    FROM
+        combined_data
+    WHERE
+        EXTRACT(YEAR FROM started_at) = 2022
+    GROUP BY
+        year
+) AS subquery
+ORDER BY
+    year;
+
+	
+	
+###
+## member and casual-user stats - month
+
+SELECT
+    TO_CHAR(started_at, 'Month') AS month,
+    COUNT(*) FILTER (WHERE member_casual = 'member') AS member_count,
+    COUNT(*) FILTER (WHERE member_casual = 'casual') AS casual_count,
+    ROUND(
+        ((COUNT(*) FILTER (WHERE member_casual = 'member') - COUNT(*) FILTER (WHERE member_casual = 'casual'))::numeric / COUNT(*)) * 100,
+        2
+    ) AS percentage_difference
+FROM
+    combined_data
+GROUP BY
+    TO_CHAR(started_at, 'Month')
+ORDER BY
+    MIN(started_at);
+	
+
+###
+## member and casual-user stats -  season
+
+SELECT
+    season,
+    TO_CHAR(member_count, '9,999,999') AS membership,
+    TO_CHAR(casual_count, '9,999,999') AS casual,
+    ROUND(((member_count - casual_count)::numeric / member_count) * 100, 2) AS percentage_difference
+FROM (
+    SELECT
+        CASE
+            WHEN EXTRACT(MONTH FROM started_at) IN (12, 1, 2) THEN 'Winter'
+            WHEN EXTRACT(MONTH FROM started_at) IN (3, 4, 5) THEN 'Spring'
+            WHEN EXTRACT(MONTH FROM started_at) IN (6, 7, 8) THEN 'Summer'
+            WHEN EXTRACT(MONTH FROM started_at) IN (9, 10, 11) THEN 'Autumn'
+            ELSE 'Unknown'
+        END AS season,
+        COUNT(*) FILTER (WHERE member_casual = 'member') AS member_count,
+        COUNT(*) FILTER (WHERE member_casual = 'casual') AS casual_count
+    FROM
+        combined_data
+    WHERE
+        EXTRACT(YEAR FROM started_at) = 2022
+    GROUP BY
+        season
+) AS subquery
+ORDER BY
+    CASE season
+        WHEN 'Winter' THEN 1
+        WHEN 'Spring' THEN 2
+        WHEN 'Summer' THEN 3
+        WHEN 'Autumn' THEN 4
+        ELSE 5
+    END;
+
+
+#### RIDE STATS
+###
+## average ride length displayed in minutes - member|casual|% difference - yearly  
+
+SELECT
+    year,
+    member_mean_ride_length_minutes,
+    casual_mean_ride_length_minutes,
+    ROUND(((casual_mean_ride_length_minutes - member_mean_ride_length_minutes) / casual_mean_ride_length_minutes) * 100, 2) AS percentage_difference
+FROM (
+    SELECT
+        EXTRACT(YEAR FROM started_at) AS year,
+        ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS member_mean_ride_length_minutes,
+        ROUND(AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS casual_mean_ride_length_minutes
+    FROM
+        combined_data
+    GROUP BY
+        year
+) AS subquery;
+
+
+###
+## average ride length displayed in minutes - member|casual|% difference - monthly 
+
+SELECT
+    TO_CHAR(started_at, 'Month') AS month,
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS member_mean_ride_length_minutes,
+    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS casual_mean_ride_length_minutes,
+    ROUND(((AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric) - (AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric)) / AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric * 100, 2) AS percentage_difference
+FROM
+    combined_data
+GROUP BY
+    month
+ORDER BY
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) DESC;
+
+	
+###
+## average ride length displayed in minutes - member|casual|% difference - seasonal 
+
+SELECT
+    CASE
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+        ELSE 'Winter'
+    END AS season,
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS member_mean_ride_length_minutes,
+    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric, 2) AS casual_mean_ride_length_minutes,
+    ROUND(((AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric) - (AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric)) / AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric * 100, 2) AS percentage_difference
+FROM
+    combined_data
+GROUP BY
+    CASE
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+        ELSE 'Winter'
+    END
+ORDER BY
+    member_mean_ride_length_minutes DESC;
+
+	
+	
+###
+## max ride length displayed in hours:minutes:seconds - yearly  
+
+SELECT 
+  CONCAT(
+    FLOOR(MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) / 3600), 
+    ' hours, ', 
+    FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 3600) / 60),
+    ' minutes, ', 
+    FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 60)),
+    ' seconds'
+  ) AS yearly_max_ride_length_hours_minutes_seconds
+FROM combined_data;
+
+
+
+###
+## max ride length displayed in hours:minutes:seconds - monthly 
+
+SELECT
+    TO_CHAR(started_at, 'Month') AS month,
+    CONCAT(
+        FLOOR(MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) / 3600),
+        ' hours ',
+        LPAD(FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 3600) / 60)::numeric::text, 2, '0'),
+        ' minutes ',
+        LPAD(FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 60))::numeric::text, 2, '0'),
+        ' seconds'
+    ) AS max_ride_length_hours_minutes_seconds
+FROM
+    combined_data
+GROUP BY
+    month
+ORDER BY
+    MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) DESC;
+	
+###
+## max ride length displayed in minutes - seasonal 
+	
+	SELECT
+    CASE
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+        ELSE 'Winter'
+    END AS season,
+    CONCAT(
+        FLOOR(MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) / 3600),
+        ' hours ',
+        LPAD(FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 3600) / 60)::numeric::text, 2, '0'),
+        ' minutes ',
+        LPAD(FLOOR((MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) % 60))::numeric::text, 2, '0'),
+        ' seconds'
+    ) AS max_ride_length_hours_minutes_seconds
+FROM
+    combined_data
+GROUP BY
+    season
+ORDER BY
+    MAX(EXTRACT(EPOCH FROM (ended_at - started_at))) DESC;
+	
+	
+###
+## mode - yearly
+
+SELECT
+    name_of_day,
+    EXTRACT(DOW FROM started_at) AS day_of_week,
+    ROUND(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, 2) AS yearly_mean_ride_length_minutes
+FROM (
+    SELECT
+        name_of_day,
+        started_at,
+        ended_at
+    FROM
+        combined_data
+) AS subquery
+GROUP BY
+    name_of_day, day_of_week
+HAVING
+    COUNT(*) = (
+        SELECT
+            COUNT(*)
+        FROM
+            combined_data
+        GROUP BY
+            name_of_day, EXTRACT(DOW FROM started_at)
+        ORDER BY
+            COUNT(*) DESC
+        LIMIT 1
+    );
+
+
+###
+## 	mode - month 
+	
+WITH monthly_mode AS (
+    SELECT
+        TO_CHAR(started_at, 'Month') AS month,
+        name_of_day,
+        ROUND(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, 2) AS monthly_mean_ride_length_minutes,
+        RANK() OVER (PARTITION BY TO_CHAR(started_at, 'Month') ORDER BY COUNT(*) DESC) AS rank
+    FROM
+        combined_data
+    GROUP BY
+        month, name_of_day
+)
+SELECT
+    month,
+    name_of_day,
+    monthly_mean_ride_length_minutes
+FROM
+    monthly_mode
+WHERE
+    rank = 1
+ORDER BY
+    monthly_mean_ride_length_minutes DESC;	
+
+
+###
+## mode - season
+
+WITH seasonal_mode AS (
+    SELECT
+        CASE
+            WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+            WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+            WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+            ELSE 'Winter'
+        END AS season,
+        name_of_day,
+        ROUND(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, 2) AS seasonal_mean_ride_length_minutes,
+        RANK() OVER (PARTITION BY CASE
+                                    WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+                                    WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+                                    WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+                                    ELSE 'Winter'
+                                END
+                     ORDER BY COUNT(*) DESC) AS rank
+    FROM
+        combined_data
+    GROUP BY
+        season, name_of_day
+)
+SELECT
+    season,
+    name_of_day,
+    seasonal_mean_ride_length_minutes
+FROM
+    seasonal_mode
+WHERE
+    rank = 1
+ORDER BY
+    seasonal_mean_ride_length_minutes DESC;
+
+
+
+	
+	
+####
+## 	average ride length - rider type - year
+
+SELECT
+    member_casual,
+    TO_CHAR(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, '9,999,999.99') AS average_ride_length_minutes
+FROM
+    combined_data
+GROUP BY
+    member_casual;
+
+
+####
+## 	average ride length - rider type - month
+
+SELECT
+    TO_CHAR(started_at, 'Month') AS month,
+    member_casual,
+    TO_CHAR(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, '9,999,999.99') AS average_ride_length_minutes
+FROM
+    combined_data
+GROUP BY
+    TO_CHAR(started_at, 'Month'), member_casual
+ORDER BY
+    EXTRACT(MONTH FROM MIN(started_at)),average_ride_length_minutes DESC;
+
+
+
+
+####
+## 	average ride length - rider type - season
+
+SELECT
+    CASE
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 6 AND 8 THEN 'Summer'
+        WHEN EXTRACT(MONTH FROM started_at) BETWEEN 9 AND 11 THEN 'Autumn'
+        ELSE 'Winter'
+    END AS season,
+    member_casual,
+    TO_CHAR(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, '9,999,999.99') AS average_ride_length_minutes
+FROM
+    combined_data
+GROUP BY
+    season, member_casual
+ORDER BY
+    MIN(started_at),average_ride_length_minutes DESC;
+	
+	
+###
+## average ride length - day of week - yearly
+
+SELECT
+    EXTRACT(WEEK FROM started_at) AS week_of_year,
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric,2) AS member_avg_ride_length_minutes,
+    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric,2) AS casual_avg_ride_length_minutes
+FROM
+    combined_data
+WHERE
+    EXTRACT(YEAR FROM started_at) = 2022
+GROUP BY
+    week_of_year
+ORDER BY
+    week_of_year;
+
+
+###
+## average ride lengths - overall, member, casual - monthly
+
+SELECT
+    TO_CHAR(started_at, 'YYYY-MM') AS month,
+    ROUND(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60), 2) AS overall_avg_ride_length_minutes,
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END), 2) AS member_avg_ride_length_minutes,
+    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END), 2) AS casual_avg_ride_length_minutes
+FROM
+    combined_data
+GROUP BY
+    month
+ORDER BY
+    month;
+	
+	
+###
+## max ride length - member, casual - overall
+
+SELECT
+    EXTRACT(YEAR FROM started_at) AS year,
+    ROUND(MAX(CASE WHEN member_casual = 'member' THEN ride_length / 60 END), 2) AS member_max_ride_length_hours,
+    ROUND(MAX(CASE WHEN member_casual = 'casual' THEN ride_length / 60 END), 2) AS casual_max_ride_length_hours,
+    ROUND(((MAX(CASE WHEN member_casual = 'casual' THEN ride_length END)) - (MAX(CASE WHEN member_casual = 'member' THEN ride_length END))) / MAX(CASE WHEN member_casual = 'casual' THEN ride_length END) * 100, 2) AS percentage_difference
+FROM
+    combined_data
+WHERE
+    member_casual IN ('member', 'casual')
+GROUP BY
+    EXTRACT(YEAR FROM started_at);	
+	
+	
+###
+## highest max ridership day for member, casual	
+
+WITH member_data AS (
+    SELECT
+        EXTRACT(DOW FROM started_at) AS day_of_week,
+        COUNT(*) AS member_ride_count,
+        ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS member_rank
+    FROM
+        combined_data
+    WHERE
+        member_casual = 'member'
+    GROUP BY
+        EXTRACT(DOW FROM started_at)
+), casual_data AS (
+    SELECT
+        EXTRACT(DOW FROM started_at) AS day_of_week,
+        COUNT(*) AS casual_ride_count,
+        ROW_NUMBER() OVER (ORDER BY COUNT(*) DESC) AS casual_rank
+    FROM
+        combined_data
+    WHERE
+        member_casual = 'casual'
+    GROUP BY
+        EXTRACT(DOW FROM started_at)
+)
+SELECT
+    TO_CHAR(to_date(m.day_of_week::text, 'D'), 'Day') AS member_highest_occurrence_day,
+    TO_CHAR(to_date(c.day_of_week::text, 'D'), 'Day') AS casual_highest_occurrence_day
+FROM
+    member_data m
+JOIN
+    casual_data c
+    ON m.member_rank = 1
+    AND c.casual_rank = 1;
+	
+
+###
+## average ride length per day - member, casual	
+SELECT
+    TO_CHAR(started_at, 'Day') AS day_of_week,
+    ROUND(AVG(CASE WHEN member_casual = 'member' THEN ride_length END)::numeric, 2) AS member_top_ride_length,
+    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN ride_length END)::numeric, 2) AS casual_top_ride_length
+FROM
+    combined_data
+GROUP BY
+    TO_CHAR(started_at, 'Day')
+ORDER BY
+    MIN(EXTRACT(DOW FROM started_at));
+	
+
+###
+## 	max ride length per day - member, casual	
+
+SELECT
+    TO_CHAR(started_at, 'Day') AS day_of_week,
+    ROUND(MAX(CASE WHEN member_casual = 'member' THEN ride_length END)::numeric, 2) AS member_top_ride_length,
+    ROUND(MAX(CASE WHEN member_casual = 'casual' THEN ride_length END)::numeric, 2) AS casual_top_ride_length
+FROM
+    combined_data
+GROUP BY
+    TO_CHAR(started_at, 'Day')
+ORDER BY
+    MIN(EXTRACT(DOW FROM started_at));
+	
+	
+###
+## count of riders per day member, casual % difference (yearly)
+
+SELECT
+    TO_CHAR(started_at, 'Day') AS day_of_week,
+    REPLACE(TO_CHAR(SUM(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), '999,999'), ',', ',') AS member_ride_count,
+    REPLACE(TO_CHAR(SUM(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), '999,999'), ',', ',') AS casual_ride_count,
+    REPLACE(TO_CHAR(ROUND(((SUM(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END) - SUM(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END))::numeric / SUM(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END)) * 100, 2), '999,999.99'), ',', ',') AS percent_difference
+FROM
+    combined_data
+GROUP BY
+    TO_CHAR(started_at, 'Day')
+ORDER BY
+    EXTRACT(DOW FROM MIN(started_at));	
+	
+	
+### PIVOT TABLES****************************************************************************	
+###
+## average ride_length for users by day_of_week
+
+SELECT *
+FROM crosstab(
+    'SELECT
+        CASE WHEN member_casual = ''member'' THEN ''Member'' ELSE ''Casual'' END AS category,
+        EXTRACT(DOW FROM started_at) AS day_of_week,
+        ROUND(AVG(ride_length), 4) AS average_ride_length
+    FROM
+        combined_data
+    GROUP BY
+        1, 2
+    ORDER BY
+        1, 2',
+    'VALUES (0), (1), (2), (3), (4), (5), (6)'
+) AS pivot_table(category text, "Sunday" numeric, "Monday" numeric, "Tuesday" numeric, "Wednesday" numeric, "Thursday" numeric, "Friday" numeric, "Saturday" numeric);
+
+
+
+
+###
+##	count of rides per day - member casual (yearly)
+
+SELECT *
+FROM crosstab(
+    'SELECT
+        CASE EXTRACT(DOW FROM started_at)
+            WHEN 0 THEN ''Sunday''
+            WHEN 1 THEN ''Monday''
+            WHEN 2 THEN ''Tuesday''
+            WHEN 3 THEN ''Wednesday''
+            WHEN 4 THEN ''Thursday''
+            WHEN 5 THEN ''Friday''
+            WHEN 6 THEN ''Saturday''
+        END AS day_of_week_text,
+        member_casual,
+        COUNT(*) AS ride_count
+    FROM
+        combined_data
+    GROUP BY
+        day_of_week_text, member_casual
+    ORDER BY
+        day_of_week_text',
+    'VALUES (''member''), (''casual'')'
+) AS pivot_table(day_of_week_text text, member numeric, casual numeric);
+
+###
+## same as previous with percent difference added
+
+SELECT
+    day_of_week_text,
+    TO_CHAR(SUM(CASE WHEN member_casual = 'member' THEN ride_count END), 'FM999,999,999') AS member_ride_count,
+    TO_CHAR(SUM(CASE WHEN member_casual = 'casual' THEN ride_count END), 'FM999,999,999') AS casual_ride_count,
+    TO_CHAR(
+        ROUND(((
+            SUM(CASE WHEN member_casual = 'member' THEN ride_count END)
+            - SUM(CASE WHEN member_casual = 'casual' THEN ride_count END)
+        )::numeric / NULLIF(SUM(CASE WHEN member_casual = 'member' THEN ride_count END), 0)) * 100, 2),
+        'FM999,999,999.99'
+    ) AS percent_difference
+FROM
+    (
+        SELECT
+            CASE EXTRACT(DOW FROM started_at)
+                WHEN 0 THEN 'Sunday'
+                WHEN 1 THEN 'Monday'
+                WHEN 2 THEN 'Tuesday'
+                WHEN 3 THEN 'Wednesday'
+                WHEN 4 THEN 'Thursday'
+                WHEN 5 THEN 'Friday'
+                WHEN 6 THEN 'Saturday'
+            END AS day_of_week_text,
+            member_casual,
+            COUNT(*) AS ride_count
+        FROM
+            combined_data
+        GROUP BY
+            day_of_week_text, member_casual
+        ORDER BY
+            day_of_week_text
+    ) AS subquery
+GROUP BY
+    day_of_week_text;
+
+
+	
+	
+###
+## count of rides for each week of the year - member, casual
+
+SELECT *
+FROM crosstab(
+    'SELECT
+        EXTRACT(WEEK FROM started_at) AS week_number,
+        member_casual,
+        COUNT(*) AS ride_count
+    FROM
+        combined_data
+    GROUP BY
+        week_number, member_casual
+    ORDER BY
+        week_number',
+    'VALUES (''member''), (''casual'')'
+) AS pivot_table(week_number int, member numeric, casual numeric);	
+	
+	
+	
+	
+	
+###
+## END******************************************************************************************************************************************************************************************************************************
+###
+
+	
