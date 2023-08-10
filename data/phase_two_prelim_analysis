@@ -146,8 +146,8 @@ Sub Stats_Pivots()
         PSheet.Range("N5").Value = "Count by Day"
         
         ' Turn off screen updating and calculations
-Application.ScreenUpdating = False
-Application.Calculation = xlCalculationManual
+        Application.ScreenUpdating = False
+        Application.Calculation = xlCalculationManual
         
        ' Define Pivot Range
         ' Find the last row and last column of the data
@@ -259,8 +259,8 @@ Application.Calculation = xlCalculationManual
         Next PTable
         
         ' Turn on screen updating and calculations
-Application.ScreenUpdating = True
-Application.Calculation = xlCalculationAutomatic
+        Application.ScreenUpdating = True
+        Application.Calculation = xlCalculationAutomatic
         
        ' Save the workbook in Excel format
         newFilePathXLSX = destinationFolderPath & Left$(wb.Name, Len(wb.Name) - 4) & ".xlsx"
@@ -277,4 +277,3 @@ Application.Calculation = xlCalculationAutomatic
     ' Display a message box indicating the files have been processed
     MsgBox "Files have been processed and saved as macro-enabled workbooks.", vbInformation
 End Sub
-
