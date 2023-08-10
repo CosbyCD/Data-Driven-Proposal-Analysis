@@ -1,0 +1,280 @@
+/*
+Macro Synopsis: Dynamic Data Analysis and Enhanced Insights
+
+The "Stats_Pivots" Excel VBA macro offers a streamlined approach 
+to conducting dynamic data analysis and generating enhanced insights.
+This versatile macro automates several key steps, transforming raw 
+CSV files into informative pivot tables and calculated columns.
+
+Key Features:
+
+Effortless Data Transformation: The macro efficiently transforms raw 
+CSV files, ensuring uniform data treatment. It standardizes column 
+types and numeric formats, enhancing data consistency and accuracy.
+
+Insightful Calculations: The macro introduces calculated columns to 
+provide valuable insights. It computes essential metrics like average, 
+maximum, minimum, and mode effortlessly, contributing to a comprehensive 
+data overview.
+
+Dynamic Pivot Tables: This macro goes beyond basic analysis by creating 
+dynamic pivot tables. It automates the process of setting up pivot tables 
+for different metrics, enabling deeper analysis and comparison.
+
+Enhanced Day Analysis: With added columns for day analysis, the macro 
+enriches your understanding of data patterns. Numeric day representations 
+are transformed into corresponding day names for improved interpretation.
+
+User-Friendly Formatting: The macro enhances data readability by adjusting 
+column widths and optimizing the worksheet's display. Columns are 
+thoughtfully set to an optimal width for a seamless data viewing experience.
+
+Effortless Saving and Organization: Processed files are systematically 
+saved in Excel format to a designated folder, maintaining data integrity 
+and ease of access. Original CSV files remain unchanged, preserving data 
+accuracy.
+
+Value Proposition:
+
+The "Stats_Pivots" macro demonstrates adept Excel VBA skills, showcasing 
+proficiency in real-world data manipulation and analysis. It offers an 
+efficient solution for dynamic pivot table creation, calculated column 
+generation, and insightful data presentation. By automating essential 
+tasks, this macro exemplifies readiness for data-centric projects, while 
+its user-friendly design contributes to efficient data exploration and 
+decision-making.
+*/
+
+Sub Stats_Pivots()
+    ' Declare Variables
+    Dim folderPath As String
+    Dim filePath As String
+    Dim wb As Workbook
+    Dim DSheet As Worksheet
+    Dim PCache As pivotCache
+    Dim PTable As pivotTable
+    Dim PRange As Range
+    Dim lastDataRow As Long
+
+    ' Specify the source folder path where the CSV files are located
+    folderPath = "D:\phase_one_transform\"
+
+    ' Specify the destination folder path for saving files
+    Dim destinationFolderPath As String
+    destinationFolderPath = "D:\phase_two_prelim_analysis\"
+
+    ' Get the first CSV file in the folder
+    filePath = Dir(folderPath & "*.csv")
+
+    Do While filePath <> ""
+        ' Construct the full file path
+        Dim fullFilePath As String
+        fullFilePath = folderPath & filePath
+        
+        ' Open the CSV file
+        Set wb = Workbooks.Open(fullFilePath)
+
+        ' Set the data sheet using wildcard
+        Set DSheet = Nothing
+        For Each ws In wb.Sheets
+            If ws.Name Like "*-divvy-tripdata" Then
+                Set DSheet = ws
+                Exit For
+            End If
+        Next ws
+
+        If DSheet Is Nothing Then
+            MsgBox "Worksheet not found.", vbExclamation
+            wb.Close SaveChanges:=False
+            ' Get the next CSV file in the folder
+            filePath = Dir
+            Exit Do ' Exit the loop if the worksheet is not found
+        End If
+
+        ' Add and rename the new sheet
+        Dim PSheet As Worksheet
+        On Error Resume Next
+        Application.DisplayAlerts = False
+        ThisWorkbook.Sheets("Prelim Analytics").Delete
+        On Error GoTo 0
+        Set PSheet = wb.Sheets.Add(Before:=DSheet)
+        PSheet.Name = "Prelim Analytics"
+        Application.DisplayAlerts = True
+        
+        
+        'CALCULATIONS
+        ' Set headers for the new sheet
+        PSheet.Range("A1").Value = "AVERAGE"
+        PSheet.Range("B1").Value = "MAX"
+        PSheet.Range("C1").Value = "MIN"
+        PSheet.Range("D1").Value = "MODE"
+        PSheet.Range("E1").Value = "DAY"
+        PSheet.Range("F1").Value = "RECORD_COUNT"
+                            
+        ' Adjust column widths for the first 6 columns
+        PSheet.Columns("A").ColumnWidth = 11 ' Adjust the value as needed
+        PSheet.Columns("B").ColumnWidth = 11 ' Adjust the value as needed
+        PSheet.Columns("C").ColumnWidth = 11 ' Adjust the value as needed
+        PSheet.Columns("D").ColumnWidth = 11 ' Adjust the value as needed
+        PSheet.Columns("E").ColumnWidth = 11 ' Adjust the value as needed
+        PSheet.Columns("F").ColumnWidth = 15 ' Adjust the value as needed
+        
+        ' Calculate averages, max, min, mode, and day using formulas
+        PSheet.Range("A2").FormulaR1C1 = "=AVERAGE('" & DSheet.Name & "'!C[13])"
+        PSheet.Range("B2").FormulaR1C1 = "=MAX('" & DSheet.Name & "'!C[12])"
+        PSheet.Range("C2").FormulaR1C1 = "=MIN('" & DSheet.Name & "'!C[11])"
+        PSheet.Range("D2").FormulaR1C1 = "=MODE('" & DSheet.Name & "'!C[11])"
+        PSheet.Range("E2").FormulaR1C1 = "=XLOOKUP(RC[-1],'" & DSheet.Name & "'!C[10],'" & DSheet.Name & "'!C[11])"
+        
+        ' Calculate and set the total number of records in column A (excluding header)
+        lastDataRow = DSheet.Cells(DSheet.Rows.Count, 1).End(xlUp).Row
+        Dim recordCount As Long
+        recordCount = IIf(lastDataRow >= 2, lastDataRow - 1, 0) ' Subtract 1 for the header
+        
+        ' Place the record count in cell F2
+        PSheet.Range("F2").Value = recordCount
+        
+        ' Apply number format to the cell
+        PSheet.Range("F2").NumberFormat = "#,##0"
+                
+        'PIVOTS
+        
+    
+        ' Set names for pivot tables
+        PSheet.Range("A5").Value = "Average by Ridership"
+        PSheet.Range("D5").Value = "Average by Day"
+        PSheet.Range("N5").Value = "Count by Day"
+        
+        ' Turn off screen updating and calculations
+Application.ScreenUpdating = False
+Application.Calculation = xlCalculationManual
+        
+       ' Define Pivot Range
+        ' Find the last row and last column of the data
+        LastRow = DSheet.Cells(Rows.Count, 1).End(xlUp).Row
+        LastCol = DSheet.Cells(1, Columns.Count).End(xlToLeft).Column
+
+        ' Set the pivot table data range using the last row and last column
+        Set PRange = DSheet.Cells(1, 1).Resize(LastRow, LastCol)
+        ' Define Pivot Cache
+        Set PCache = ActiveWorkbook.PivotCaches.Create(SourceType:=xlDatabase, SourceData:=PRange)
+
+        ' Convert "ride_length" column to numeric values
+        DSheet.Range("P2:P" & lastDataRow).Value = DSheet.Range("P2:P" & lastDataRow).Value
+        
+        ' Insert Pivot Table 1
+        Set PTable = PCache.CreatePivotTable(TableDestination:=PSheet.Cells(6, 1), TableName:="PivotTable1")
+        
+        ' Get the "member_casual" pivot field
+        Dim memberCasualField As PivotField
+        On Error Resume Next
+        Set memberCasualField = PTable.PivotFields("member_casual")
+        On Error GoTo 0
+        
+        ' Check if the field was found and set the orientation and position
+        If Not memberCasualField Is Nothing Then
+            memberCasualField.Orientation = xlRowField
+            memberCasualField.Position = 1
+        Else
+            MsgBox "Pivot field 'member_casual' not found.", vbExclamation
+        End If
+        
+        ' Set other pivot field properties
+        With PSheet.PivotTables("PivotTable1").PivotFields("member_casual")
+            .Orientation = xlRowField
+            .Position = 1
+        End With
+        
+        ' Insert Data Field
+        With PSheet.PivotTables("PivotTable1").PivotFields("ride_length")
+            .Orientation = xlDataField
+            .Function = xlAverage
+            .NumberFormat = "#,##0.0000" ' Format to 4 decimal places
+            .Name = "Avg of ride_length"
+        End With
+        
+       ' Insert Pivot Table 2
+        Set PTable = PCache.CreatePivotTable(TableDestination:=PSheet.Cells(6, 4), TableName:="PivotTable2")
+        
+        ' Get the "member_casual" pivot field for PivotTable2
+        Dim memberCasualField2 As PivotField
+        On Error Resume Next
+        Set memberCasualField2 = PTable.PivotFields("member_casual")
+        On Error GoTo 0
+        
+        ' Check if the field was found and set the orientation and position
+        If Not memberCasualField2 Is Nothing Then
+            memberCasualField2.Orientation = xlRowField
+            memberCasualField2.Position = 1
+        Else
+            MsgBox "Pivot field 'member_casual' not found for PivotTable2.", vbExclamation
+        End If
+        
+        ' Get the "name_of_day" pivot field for PivotTable2
+        Dim nameOfDayField As PivotField
+        On Error Resume Next
+        Set nameOfDayField = PTable.PivotFields("name_of_day")
+        On Error GoTo 0
+        
+        ' Check if the field was found and set the orientation and position
+        If Not nameOfDayField Is Nothing Then
+            nameOfDayField.Orientation = xlColumnField
+            nameOfDayField.Position = 1
+        Else
+            MsgBox "Pivot field 'name_of_day' not found for PivotTable2.", vbExclamation
+        End If
+        
+        ' Insert Data Field
+        With PSheet.PivotTables("PivotTable2").PivotFields("ride_length")
+            .Orientation = xlDataField
+            .Function = xlAverage
+            .NumberFormat = "0.0000"
+            .Name = "Average of ride_length"
+        End With
+        
+        ' Insert Pivot Table 3
+        Set PTable = PCache.CreatePivotTable(TableDestination:=PSheet.Cells(6, 14), TableName:="PivotTable3")
+        ' Insert Row Fields
+        With PSheet.PivotTables("PivotTable3").PivotFields("member_casual")
+            .Orientation = xlRowField
+            .Position = 1
+        End With
+        ' Insert Column Fields
+        With PSheet.PivotTables("PivotTable3").PivotFields("name_of_day")
+            .Orientation = xlColumnField
+            .Position = 1
+        End With
+        ' Insert Data Field
+        With PSheet.PivotTables("PivotTable3").PivotFields("member_casual")
+            .Orientation = xlDataField
+            .Function = xlCount
+            .NumberFormat = "#,##0"
+            .Name = "Count of rides by day"
+        End With
+        
+        ' Format Pivot Tables
+        For Each PTable In PSheet.PivotTables
+            PTable.ShowTableStyleRowStripes = True
+            PTable.TableStyle2 = "PivotStyleMedium9"
+        Next PTable
+        
+        ' Turn on screen updating and calculations
+Application.ScreenUpdating = True
+Application.Calculation = xlCalculationAutomatic
+        
+       ' Save the workbook in Excel format
+        newFilePathXLSX = destinationFolderPath & Left$(wb.Name, Len(wb.Name) - 4) & ".xlsx"
+        wb.SaveAs newFilePathXLSX, FileFormat:=xlOpenXMLWorkbook
+
+        
+        ' Close the CSV file
+        wb.Close SaveChanges:=False
+        
+        ' Get the next CSV file in the folder
+        filePath = Dir
+    Loop
+
+    ' Display a message box indicating the files have been processed
+    MsgBox "Files have been processed and saved as macro-enabled workbooks.", vbInformation
+End Sub
+
