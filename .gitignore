@@ -1,0 +1,14 @@
+# Ignore compiled binaries and build artifacts
+*.exe
+*.dll
+*.class
+/target/
+/build/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore configuration files with sensitive information
+config.ini
+secrets.json
