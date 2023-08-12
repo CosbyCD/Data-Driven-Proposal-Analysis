@@ -1,29 +1,17 @@
 /*
-Macro Synopsis: Dynamic Data Analysis and Enhanced Insights
+Macro Synopsis: "Stats_Pivots"
+Dynamic Data Analysis and Enhanced Insights
 
 The "Stats_Pivots" Excel VBA macro offers a streamlined approach 
-to conducting dynamic data analysis and generating enhanced insights.
-This versatile macro automates several key steps, transforming raw 
+to conduct dynamic data analysis, transforming pre cleaned  
 CSV files into informative pivot tables and calculated columns.
 
-Key Features:
+Insightful Calculations: Creates calculated columns to 
+provide the following metrics - average, maximum, minimum, and mode, as 
+well as a count of records for the analyst’s statistics gathering
 
-Effortless Data Transformation: The macro efficiently transforms raw 
-CSV files, ensuring uniform data treatment. It standardizes column 
-types and numeric formats, enhancing data consistency and accuracy.
-
-Insightful Calculations: The macro introduces calculated columns to 
-provide valuable insights. It computes essential metrics like average, 
-maximum, minimum, and mode effortlessly, contributing to a comprehensive 
-data overview.
-
-Dynamic Pivot Tables: This macro goes beyond basic analysis by creating 
-dynamic pivot tables. It automates the process of setting up pivot tables 
+Dynamic Pivot Tables: Creating automated pivot tables 
 for different metrics, enabling deeper analysis and comparison.
-
-Enhanced Day Analysis: With added columns for day analysis, the macro 
-enriches your understanding of data patterns. Numeric day representations 
-are transformed into corresponding day names for improved interpretation.
 
 User-Friendly Formatting: The macro enhances data readability by adjusting 
 column widths and optimizing the worksheet's display. Columns are 
@@ -34,15 +22,14 @@ saved in Excel format to a designated folder, maintaining data integrity
 and ease of access. Original CSV files remain unchanged, preserving data 
 accuracy.
 
-Value Proposition:
+Value Proposition: The "Stats_Pivots" macro demonstrates adept Excel
+VBA skills, showcasing proficiency in real-world data manipulation and
+analysis. It offers an efficient solution for dynamic pivot table creation,
+calculated column generation, and insightful data presentation. By
+automating essential tasks, this macro exemplifies readiness for 
+data-centric projects, while its user-friendly design contributes to 
+efficient data exploration and decision-making.
 
-The "Stats_Pivots" macro demonstrates adept Excel VBA skills, showcasing 
-proficiency in real-world data manipulation and analysis. It offers an 
-efficient solution for dynamic pivot table creation, calculated column 
-generation, and insightful data presentation. By automating essential 
-tasks, this macro exemplifies readiness for data-centric projects, while 
-its user-friendly design contributes to efficient data exploration and 
-decision-making.
 */
 
 Sub Stats_Pivots()

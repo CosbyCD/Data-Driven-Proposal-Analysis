@@ -1,33 +1,28 @@
 /*
-Macro Synopsis: Data Enhancement and Insight Generation
+Macro Synopsis: "PreliminaryRequirements_Transform"
+Data Enhancement and Insight Generation
 
-The "PreliminaryRequirements_Transform" Excel VBA macro offers 
-a practical solution to enhance data quality and facilitate 
-insightful analysis. This macro streamlines the preparation of CSV
-files, ensuring consistent data treatment and introducing 
-calculated columns for meaningful insights.
+The "PreliminaryRequirements_Transform" Excel VBA macro streamlines 
+the preparation of CSV files, ensuring consistent data treatment 
+and introducing calculated columns for meaningful insights.
 
 Key Features:
-
 Efficient Data Standardization:
-This macro simplifies the data preparation process for CSV files.
-Each file undergoes systematic data standardization, ensuring 
-uniform treatment. Column types, such as date/time and text, are
-aligned for consistency. Precise numeric formats are applied to 
+Simplifies the data preparation process for CSV files.
+Systematic data standardization, ensuring uniform treatment.
+Column types are aligned for consistency. 
+Precise numeric formats are applied to 
 specific columns for accurate representation.
 
 Enhanced Analysis with Calculated Columns:
-The macro introduces calculated columns to enrich analysis.
+Introduces calculated columns to enrich analysis.
 The "ride_length" column captures ride durations in hours, 
-aiding ride duration insights. Additional columns, "day_of_week" 
-and "name_of_day," offer enhanced day analysis.
+Additional columns created, "day_of_week" and "name_of_day," 
 Numeric day representations are transformed into corresponding 
 day names for easier interpretation.
 
 User-Friendly Formatting:
-Column widths are adjusted for improved data readability upon opening.
-The entire worksheet is automatically formatted to fit the data comfortably.
-Columns are set to a width of 20, optimizing the user's data viewing experience.
+Worksheet is automatically formatted to fit the data comfortably,
 
 Streamlined CSV Saving:
 Processed files are saved in CSV format to the designated destination folder.
@@ -36,10 +31,11 @@ No changes are saved to the original CSV files, maintaining data accuracy.
 
 Value Proposition:
 The macro demonstrates Excel VBA proficiency, emphasizing practical 
-data transformation skills. Its efficient management of CSV files 
+data transformation skills. Efficient management of CSV files 
 supports data preprocessing tasks, showcasing capabilities in 
 real-world data manipulation and analysis. This macro exemplifies 
 readiness for data-centric projects.
+
 */
 
 Sub PreliminaryRequirements_Transform()
