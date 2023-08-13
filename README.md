@@ -1,7 +1,7 @@
 GAC_Cyclistic_project
 Project Overview
 
-Welcome to the GAC_Cyclistic_project – a capstone project focused on Cyclistic's 
+Welcome to the GAC_Cyclistic_project – a project focused on Cyclistic's 
 marketing strategies to convert casual riders into annual members. Cyclistic is a 
 bike share program in Chicago, boasting a fleet of 5,824 bikes across 692 docking 
 stations. With diverse bike categories, styles, and pricing plans, Cyclistic caters 
@@ -34,7 +34,7 @@ decision-making.
 How to Use
 To interact with this project, navigate to the "instruction.md" file in the Git 
 repository. This document provides step-by-step instructions on accessing the data, 
-executing queries, and gaining insights from the analysis.
+executing queries and gaining insights from the analysis.
 
 Key Features
 ///
