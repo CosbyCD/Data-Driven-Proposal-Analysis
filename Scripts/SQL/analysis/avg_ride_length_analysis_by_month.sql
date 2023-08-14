@@ -1,5 +1,5 @@
 /*
-File: ride_length_analysis_by_month.sql
+File: avg_ride_length_analysis_by_month.sql
 
 This SQL query analyzes ride length data based on user membership types,
 broken down by month. It calculates average ride lengths for "member" and

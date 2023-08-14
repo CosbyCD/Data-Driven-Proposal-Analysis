@@ -1,5 +1,5 @@
 /*
-File: ride_length_analysis_by_season.sql
+File: avg_ride_length_analysis_by_season.sql
 
 This query adeptly segments ride data into distinct seasons (Spring, Summer,
 Autumn, Winter) according to the "started_at" month. Subsequently, it calculates

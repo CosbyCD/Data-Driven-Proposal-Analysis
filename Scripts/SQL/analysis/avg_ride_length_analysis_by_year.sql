@@ -1,5 +1,5 @@
 /*
-File: ride_length_analysis_by_year
+File: avg_ride_length_analysis_by_year
 
 This query focuses on the average ride durations of "member"
 and "casual" riders within a single-year timeframe. 

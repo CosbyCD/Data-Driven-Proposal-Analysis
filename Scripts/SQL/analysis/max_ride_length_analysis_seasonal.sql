@@ -1,5 +1,5 @@
 /*
-File: max_equitable_ride_length_analysis_seasonal.sql
+File: max_ride_length_analysis_seasonal.sql
 
 This SQL query offers a comprehensive analysis of ride length
 statistics for "Member" and "Casual" users, segregated by 

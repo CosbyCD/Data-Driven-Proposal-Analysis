@@ -1,5 +1,5 @@
 /*
-File: yearly_max_equitable_ride_length_analysis.sql
+File: max_ride_length_analysis_yearly.sql
 
 This SQL query analyzes ride length statistics for "Member" 
 and "Casual" users over a year, presenting total and maximum 

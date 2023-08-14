@@ -1,5 +1,5 @@
 /*
-File: monthly_max_equitable_ride_length_analysis.sql
+File: max_ride_length_analysis_monthly.sql
 
 This query offers a comprehensive and equitable analysis of ride length
 statistics for "Member" and "Casual" users over the course of a year. 
