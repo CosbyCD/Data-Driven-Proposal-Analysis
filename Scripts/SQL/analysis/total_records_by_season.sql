@@ -59,7 +59,7 @@ SELECT
     WHEN EXTRACT(MONTH FROM started_at) IN (6, 7, 8) THEN 'Summer'
     WHEN EXTRACT(MONTH FROM started_at) IN (9, 10, 11) THEN 'Autumn'
   END AS season,
-  COUNT(*) AS total_records_by_season
+  TO_CHAR(COUNT(*), '999,999,999') AS total_records_by_season
 FROM
   combined_data
 GROUP BY
