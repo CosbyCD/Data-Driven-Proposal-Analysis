@@ -1,5 +1,5 @@
 /*
-File: create_holidays_backup.sql
+File: create_records_with_errors_table_backup.sql
 
 To safeguard data integrity and provide a safety net for
 potential changes, I will be generating a backup table.
@@ -15,5 +15,5 @@ reference and restoration purposes.
 */
 
 
-CREATE TABLE holidays_backup AS
-SELECT * FROM holidays;
+CREATE TABLE records_with_errors_table_backup AS
+SELECT * FROM records_with_errors_table;

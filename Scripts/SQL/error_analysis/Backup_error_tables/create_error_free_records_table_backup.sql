@@ -1,5 +1,5 @@
 /*
-File: create_combined_data_backup.sql
+File: create_error_free_records_table_backup.sql
 
 To safeguard data integrity and provide a safety net for
 potential changes, I will be generating a backup table.
@@ -15,5 +15,5 @@ reference and restoration purposes.
 */
 
 
-CREATE TABLE combined_data_backup AS
-SELECT * FROM combined_data;
+CREATE TABLE error_free_records_table_backup AS
+SELECT * FROM error_free_records_table;

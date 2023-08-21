@@ -1,5 +1,5 @@
 /*
-File: total_nulls_and_error_analysis
+File: count_fields_with_nulls.sql
 
 This query conducts a thorough investigation into the data 
 integrity of the "combined_data" database by meticulously 
