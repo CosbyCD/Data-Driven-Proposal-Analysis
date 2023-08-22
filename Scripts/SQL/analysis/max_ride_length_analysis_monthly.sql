@@ -39,7 +39,7 @@ SELECT
         TO_CHAR(FLOOR((sum_ride_length_seconds / 3600 / user_count) / 60), 'FM999,999,999'), ' hours, ',
         TO_CHAR(FLOOR((sum_ride_length_seconds / user_count % 3600) / 60), 'FM999,999,999'), ' minutes, ',
         TO_CHAR(FLOOR((sum_ride_length_seconds / user_count) % 60), 'FM999,999,999'), ' seconds'
-    ) AS max_ride_length_for_the_month
+    ) AS normalized_max_ride_length_for_the_month
 FROM MaxRideLengths
 ORDER BY 
     to_timestamp(month, 'Month')::DATE,

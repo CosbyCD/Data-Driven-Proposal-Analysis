@@ -14,6 +14,10 @@ enhancements.
 */
 
 
+-- Enable the tablefunc extension if not already enabled
+CREATE EXTENSION IF NOT EXISTS tablefunc;
+
+-- Your actual query using the crosstab function
 SELECT *
 FROM crosstab(
     'SELECT

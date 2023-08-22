@@ -34,5 +34,5 @@ SELECT
         TO_CHAR(FLOOR((sum_ride_length_seconds / 3600 / user_count) / 60), 'FM999,999,999'), ' hours, ',
         FLOOR((sum_ride_length_seconds / user_count % 3600) / 60), ' minutes, ',
         FLOOR((sum_ride_length_seconds / user_count) % 60), ' seconds'
-    ) AS max_ride_length_for_the_year
+    ) AS normalized_max_ride_length_for_the_year
 FROM MaxRideLengths;

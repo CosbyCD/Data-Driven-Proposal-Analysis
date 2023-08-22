@@ -1,5 +1,5 @@
 /*
-File: weekday_peak_ride_analysis_yearly.sql
+File: mode_day_yearly.sql
 
 This SQL query offers a detailed exploration of ride length
 trends for "Member" and "Casual" users throughout the year.
