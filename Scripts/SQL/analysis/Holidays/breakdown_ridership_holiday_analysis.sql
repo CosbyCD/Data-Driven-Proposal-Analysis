@@ -1,5 +1,5 @@
 /*
-File: ridership_holiday_analysis.sql
+File: breakdown_ridership_holiday_analysis.sql
 
 This query calculates and presents statistics related to 
 various holidays and their impact on bike ridership. It utilizes the
