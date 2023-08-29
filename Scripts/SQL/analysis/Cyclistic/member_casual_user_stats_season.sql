@@ -20,7 +20,7 @@ WITH seasonal_counts AS (
         COUNT(*) FILTER (WHERE member_casual = 'member') AS member_count,
         COUNT(*) FILTER (WHERE member_casual = 'casual') AS casual_count
     FROM
-        combined_data
+        error_free_records
     WHERE
         EXTRACT(YEAR FROM started_at) = 2022
     GROUP BY

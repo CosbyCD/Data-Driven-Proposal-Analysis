@@ -30,7 +30,7 @@ WITH MaxRideLengths AS (
         END AS season,
         SUM(EXTRACT(EPOCH FROM (ended_at - started_at))) AS sum_ride_length_seconds,
         COUNT(*) AS user_count
-    FROM combined_data
+    FROM error_free_records
     GROUP BY user_type, season
 )
 SELECT 

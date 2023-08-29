@@ -1,9 +1,12 @@
--- File: wind_impact_on_ridership_analysis.sql
+/*
+File: wind_impact_on_ridership_analysis.sql
 
--- This query examines the relationship between wind speed and ridership behavior
--- by categorizing wind speed into ranges. It calculates the count of casual and
--- member riders for each wind speed range. The output provides insights into how
--- different wind speed levels influence ridership engagement.
+This query examines the relationship between wind speed and ridership behavior
+by categorizing wind speed into ranges. It calculates the count of casual and
+ member riders for each wind speed range. The output provides insights into how
+different wind speed levels influence ridership engagement.
+*/
+
 
 SELECT
     wind_speed_range,
@@ -20,9 +23,9 @@ FROM (
         END AS wind_speed_range,
         member_casual
     FROM
-        combined_data cd
-    LEFT JOIN holidays h ON cd.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON cd.date_start = wd.datetime::date
+        error_free_records ef
+    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
     WHERE
         h.holiday_name IS NOT NULL
 ) AS wind_data

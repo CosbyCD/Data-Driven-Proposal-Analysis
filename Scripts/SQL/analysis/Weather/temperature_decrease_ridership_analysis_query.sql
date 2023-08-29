@@ -11,6 +11,8 @@ is greater than 10 degrees Fahrenheit. The query efficiently retrieves segmented
 ridership data and provides valuable insights into how 
 temperature changes impact ridership patterns.
 */
+
+
 WITH TemperatureShifts AS (
     SELECT
         wd.datetime AS shift_date,
@@ -24,23 +26,23 @@ RidershipCounts AS (
         ts.shift_date,
         ts.shift_temp AS shifted_temperature,
         ts.prev_temp AS previous_temperature,
-        rc_shift.casual_riders_count AS current_casual_riders_count,
-        rc_prev.casual_riders_count AS previous_casual_riders_count,
-        rc_shift.member_riders_count AS current_member_riders_count,
-        rc_prev.member_riders_count AS previous_member_rider_count
+        TO_CHAR(rc_shift.casual_riders_count, '9,999,999') AS current_casual_riders_count,
+        TO_CHAR(rc_prev.casual_riders_count, '9,999,999') AS previous_casual_riders_count,
+        TO_CHAR(rc_shift.member_riders_count, '9,999,999') AS current_member_riders_count,
+        TO_CHAR(rc_prev.member_riders_count, '9,999,999') AS previous_member_rider_count
     FROM TemperatureShifts ts
     LEFT JOIN (
         SELECT date_start,
                COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) AS casual_riders_count,
                COUNT(CASE WHEN member_casual = 'member' THEN 1 END) AS member_riders_count
-        FROM combined_data
+        FROM error_free_records
         GROUP BY date_start
     ) rc_shift ON ts.shift_date = rc_shift.date_start
     LEFT JOIN (
         SELECT date_start,
                COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) AS casual_riders_count,
                COUNT(CASE WHEN member_casual = 'member' THEN 1 END) AS member_riders_count
-        FROM combined_data
+        FROM error_free_records
         GROUP BY date_start
     ) rc_prev ON ts.prev_date = rc_prev.date_start
     WHERE ts.prev_temp - ts.shift_temp > 10
@@ -49,9 +51,9 @@ SELECT
     rc.shift_date,
     rc.shifted_temperature,
     rc.previous_temperature,
-    rc.current_casual_riders_count,
-    rc.previous_casual_riders_count,
-    rc.current_member_riders_count,
-    rc.previous_member_rider_count
+    current_casual_riders_count,
+    previous_casual_riders_count,
+    current_member_riders_count,
+    previous_member_rider_count
 FROM RidershipCounts rc
 ORDER BY rc.shifted_temperature DESC;

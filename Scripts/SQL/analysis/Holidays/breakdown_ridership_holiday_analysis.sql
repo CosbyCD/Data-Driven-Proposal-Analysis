@@ -3,7 +3,7 @@ File: breakdown_ridership_holiday_analysis.sql
 
 This query calculates and presents statistics related to 
 various holidays and their impact on bike ridership. It utilizes the
-"combined_data" dataset to determine the average number of casual and
+"error_free_records" dataset to determine the average number of casual and
 member riders, as well as the total ridership, on each holiday. The 
 holidays are dynamically calculated based on their respective dates 
 and specific conditions. The results are grouped by holiday name and
@@ -23,7 +23,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 1 AND EXTRACT(DAY FROM started_at) = 1
     
     UNION ALL
@@ -37,7 +37,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 1 AND EXTRACT(DAY FROM started_at) BETWEEN 15 AND 21
     
     UNION ALL
@@ -51,7 +51,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 2 AND EXTRACT(DAY FROM started_at) BETWEEN 15 AND 21
     
     UNION ALL
@@ -62,7 +62,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 3 AND EXTRACT(DAY FROM started_at) BETWEEN 22 AND 31
     
     UNION ALL
@@ -76,7 +76,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 5 AND EXTRACT(DAY FROM started_at) BETWEEN 24 AND 31
     
     UNION ALL
@@ -87,7 +87,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 7 AND EXTRACT(DAY FROM started_at) = 4
     
     UNION ALL
@@ -101,7 +101,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 10 AND EXTRACT(DAY FROM started_at) BETWEEN 8 AND 14
     
     UNION ALL
@@ -112,7 +112,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 10 AND EXTRACT(DAY FROM started_at) = 31
     
     UNION ALL
@@ -123,7 +123,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 11 AND EXTRACT(DAY FROM started_at) = 11
     
     UNION ALL
@@ -149,7 +149,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 11 AND EXTRACT(DAY FROM started_at) BETWEEN 23 AND 29
     
     UNION ALL
@@ -160,7 +160,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 12 AND EXTRACT(DAY FROM started_at) = 25
     
     UNION ALL
@@ -174,7 +174,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 9 AND EXTRACT(DAY FROM started_at) = 1
     
     -- St Patrick's Day
@@ -185,7 +185,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 3 AND EXTRACT(DAY FROM started_at) = 17
     
     -- Cinco de Mayo
@@ -196,7 +196,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 5 AND EXTRACT(DAY FROM started_at) = 5
     
     -- Bastille Day
@@ -207,7 +207,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM combined_data
+    FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 7 AND EXTRACT(DAY FROM started_at) = 14
 )
 
@@ -215,11 +215,11 @@ SELECT
     holiday_name,
     TO_CHAR(holiday_date, 'Month DD') || ' - Day ' || EXTRACT(DOY FROM holiday_date) AS holiday_date,
     TO_CHAR(holiday_date, 'Day') AS day_of_week,
-    ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), 2) AS average_casual_riders,
-    ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), 2) AS average_member_riders,
-    SUM(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END) AS casual_riders_on_holiday,
-    SUM(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END) AS member_riders_on_holiday,
-    COUNT(*) AS total_riders_on_holiday
+    TO_CHAR(ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), 2), '999,999,990.00') AS average_casual_riders,
+    TO_CHAR(ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), 2), '999,999,990.00') AS average_member_riders,
+    TO_CHAR(SUM(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), '9,999,999') AS casual_riders_on_holiday,
+    TO_CHAR(SUM(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), '9,999,999') AS member_riders_on_holiday,
+    TO_CHAR(COUNT(*), '9,999,999') AS total_riders_on_holiday
 FROM holiday_dates
 GROUP BY holiday_name, holiday_date
 ORDER BY MIN(day_of_year);

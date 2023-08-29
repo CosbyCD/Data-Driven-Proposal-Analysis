@@ -34,7 +34,7 @@ FROM (
                  THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END
         )::numeric AS casual_mean_ride_length_minutes
     FROM
-        combined_data
+        error_free_records
     GROUP BY
         year
 ) AS subquery;

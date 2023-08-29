@@ -1,5 +1,5 @@
 /*
-File: mode_analysis_seasonal.sql
+File: mode_day_seasonal.sql
 
 This query performs a comprehensive analysis of ride data based on 
 the seasons, providing insights into user behavior and preferences. By 
@@ -44,7 +44,7 @@ SELECT
                                 END
                      ORDER BY COUNT(*) DESC) AS rank
     FROM
-        combined_data
+        error_free_records
     GROUP BY
         season, name_of_day, user_type
 )

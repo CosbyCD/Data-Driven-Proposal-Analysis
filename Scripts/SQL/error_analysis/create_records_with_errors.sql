@@ -1,15 +1,16 @@
 /*
-File: create_records_with_errors_table.sql
+File: create_records_with_errors.sql
 
-This SQL query creates a new table named 'records_with_errors_table'
+This SQL query creates a new table named 'records_with_errors'
 by selecting rows from the 'combined_data' table where columns 
-have missing or empty values. The conditions ensure that any 
+have missing or empty values as well as those records where the 
+'ride_length' are negative. The conditions ensure that any 
 columns are checked for validity before being included in the 
 new table.
 */
 
 
-CREATE TABLE records_with_errors_table AS
+CREATE TABLE records_with_errors AS
 SELECT *
 FROM combined_data
 WHERE
@@ -42,4 +43,5 @@ WHERE
     TRIM(member_casual) = '' OR
     ride_length IS NULL OR
     day_of_week IS NULL OR
-    name_of_day IS NULL;
+    name_of_day IS NULL	OR
+	ride_length < 0;

@@ -38,7 +38,7 @@ SELECT
                    THEN EXTRACT(EPOCH FROM (ended_at - started_at)) / 60 END)::numeric * 100, 2
     ) AS percentage_difference
 FROM
-    combined_data
+    error_free_records
 GROUP BY
     CASE
         WHEN EXTRACT(MONTH FROM started_at) BETWEEN 3 AND 5 THEN 'Spring'

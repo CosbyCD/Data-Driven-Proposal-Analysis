@@ -1,7 +1,7 @@
 /*
-File: create_error_free_records_table.sql
+File: create_error_free_records.sql
 
-This SQL query creates a new table 'error_free_records_table'
+This SQL query creates a new table 'error_free_records'
 by selecting rows from 'combined_data' where various 
 columns have valid values. The query filters out rows 
 where columns have missing or empty values, resulting 
@@ -9,8 +9,7 @@ in a clean dataset without errors.
 
 */
 
-
-CREATE TABLE error_free_records_table AS
+CREATE TABLE error_free_records AS
 SELECT *
 FROM combined_data
 WHERE NOT (
@@ -29,5 +28,6 @@ WHERE NOT (
     (member_casual IS NULL OR member_casual = '' OR TRIM(member_casual) = '') OR
     (ride_length IS NULL) OR
     (day_of_week IS NULL) OR
-    (name_of_day IS NULL)
+    (name_of_day IS NULL) OR
+    (ride_length < 0) -- And excluding records with negative ride_length
 );

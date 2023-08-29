@@ -14,8 +14,8 @@ SELECT
     h.holiday_name,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) + COUNT(CASE WHEN member_casual = 'member' THEN 1 END), '999,999') AS total_ridership
 FROM
-    combined_data cd
-LEFT JOIN holidays h ON cd.date_start = h.holiday_start_date
+    error_free_records ef
+LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
 WHERE
     h.holiday_name IS NOT NULL
 GROUP BY

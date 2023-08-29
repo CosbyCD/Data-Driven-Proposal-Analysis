@@ -23,9 +23,9 @@ FROM (
         END AS humidity_range,
         member_casual
     FROM
-        combined_data cd
-    LEFT JOIN holidays h ON cd.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON cd.date_start = wd.datetime::date
+        error_free_records ef
+    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
     WHERE
         h.holiday_name IS NOT NULL
 ) AS humidity_data

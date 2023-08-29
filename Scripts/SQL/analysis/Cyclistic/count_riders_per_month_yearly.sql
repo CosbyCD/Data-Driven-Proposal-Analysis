@@ -23,12 +23,13 @@ FROM crosstab(
     'SELECT
         EXTRACT(MONTH FROM started_at) AS month_number,
         member_casual,
-        COUNT(*) AS ride_count
+        TO_CHAR(COUNT(*), ''9,999,999'') AS ride_count
     FROM
-        combined_data
+        error_free_records
     GROUP BY
         month_number, member_casual
     ORDER BY
         month_number',
     'VALUES (''member''), (''casual'')'
-) AS pivot_table(month_number int, member numeric, casual numeric);
+) AS pivot_table(month_number int, member text, casual text);
+

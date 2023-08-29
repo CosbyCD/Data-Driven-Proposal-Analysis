@@ -32,7 +32,7 @@ FROM crosstab(
         EXTRACT(DOW FROM started_at) AS day_of_week,
         ROUND(AVG(CAST(ride_length AS numeric)), 4) AS average_ride_length
     FROM
-        combined_data
+        error_free_records
     GROUP BY
         1, 2
     ORDER BY

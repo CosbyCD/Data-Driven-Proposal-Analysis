@@ -19,7 +19,7 @@ SELECT
 								THEN 1 ELSE 0 END))::numeric / SUM(CASE WHEN member_casual = 'member' 
 								THEN 1 ELSE 0 END)) * 100, 2), '999,999.99'), ',', ',') AS percent_difference
 FROM
-    combined_data
+    error_free_records
 GROUP BY
     TO_CHAR(started_at, 'Day')
 ORDER BY
