@@ -37,20 +37,19 @@ FROM (
             ELSE '80°F and above'
         END AS temperature_range,
         CASE
-            WHEN wd.precip > 0 THEN 'Precipitation'
+            WHEN hwm.precip > 0 THEN 'Precipitation'
             ELSE 'No Precipitation'
         END AS precipitation_status,
         CASE
-            WHEN wd.precip IS NULL THEN NULL
-            WHEN wd.precip > 0 THEN COALESCE(wd.preciptype, 'Other')
+            WHEN hwm.precip IS NULL THEN NULL
+            WHEN hwm.precip > 0 THEN COALESCE(hwm.preciptype, 'Other')
         END AS precipitation_type,
-        member_casual
+        ef.member_casual
     FROM
         error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS temp_precip_data
 GROUP BY
     temperature_range, precipitation_status, precipitation_type

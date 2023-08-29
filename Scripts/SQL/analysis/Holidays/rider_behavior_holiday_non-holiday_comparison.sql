@@ -10,12 +10,12 @@ differ between these two day types.
 */
 
 SELECT
-    CASE WHEN h.holiday_name IS NOT NULL THEN 'Holiday' ELSE 'Non-Holiday' END AS day_type,
+    CASE WHEN hwm.holiday_name IS NOT NULL THEN 'Holiday' ELSE 'Non-Holiday' END AS day_type,
     ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), 4) AS avg_casual_riders,
     ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), 4) AS avg_member_riders
 FROM
     error_free_records ef
-LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
 GROUP BY
     day_type
 ORDER BY

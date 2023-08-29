@@ -14,18 +14,17 @@ ridership patterns, allowing for a comprehensive analysis of rider
 preferences and behavior during festive periods.
 
 */
-
-
 WITH holiday_dates AS (
     SELECT 
         'New Year''s Day' AS holiday_name,
-        DATE_TRUNC('year', started_at) + INTERVAL '0 day' AS holiday_date,
-        DATE_PART('doy', started_at) AS day_of_year,
-        started_at AS start_date,
-        member_casual
-    FROM error_free_records
-    WHERE EXTRACT(MONTH FROM started_at) = 1 AND EXTRACT(DAY FROM started_at) = 1
-    
+        DATE_TRUNC('year', hwm.date_w) + INTERVAL '0 day' AS holiday_date,
+        DATE_PART('doy', hwm.date_w) AS day_of_year,
+        hwm.date_w,
+        ef.member_casual
+    FROM holidays_weather_merged hwm
+    JOIN error_free_records ef ON hwm.date_w = ef.date_start
+    WHERE EXTRACT(MONTH FROM hwm.date_w) = 1 AND EXTRACT(DAY FROM hwm.date_w) = 1
+	    
     UNION ALL
     
     SELECT 
@@ -209,7 +208,7 @@ WITH holiday_dates AS (
         member_casual
     FROM error_free_records
     WHERE EXTRACT(MONTH FROM started_at) = 7 AND EXTRACT(DAY FROM started_at) = 14
-)
+	)
 
 SELECT 
     holiday_name,

@@ -16,18 +16,17 @@ SELECT
 FROM (
     SELECT
         CASE
-            WHEN humidity < 30 THEN 'Less than 30%'
-            WHEN humidity >= 30 AND humidity < 50 THEN '30-49%'
-            WHEN humidity >= 50 AND humidity < 70 THEN '50-69%'
-            WHEN humidity >= 70 THEN '70% and above'
+            WHEN hwm.humidity < 30 THEN 'Less than 30%'
+            WHEN hwm.humidity >= 30 AND hwm.humidity < 50 THEN '30-49%'
+            WHEN hwm.humidity >= 50 AND hwm.humidity < 70 THEN '50-69%'
+            WHEN hwm.humidity >= 70 THEN '70% and above'
         END AS humidity_range,
-        member_casual
+        ef.member_casual
     FROM
-        error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+        holidays_weather_merged hwm
+    LEFT JOIN error_free_records ef ON hwm.date_w = ef.date_start
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS humidity_data
 GROUP BY
     humidity_range

@@ -14,16 +14,15 @@ SELECT
 FROM (
     SELECT
         CASE
-            WHEN wd.conditions IS NULL THEN 'Unknown'
-            ELSE wd.conditions
+            WHEN hwm.conditions IS NULL THEN 'Unknown'
+            ELSE hwm.conditions
         END AS conditions,
-        member_casual
+        ef.member_casual
     FROM
         error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS weather_conditions_data
 GROUP BY
     conditions

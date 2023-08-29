@@ -49,3 +49,9 @@ Acknowledgments
 I would like to express my gratitude to Coursera and Google for providing the 
 foundational instructions and resources for this project. Additionally, I acknowledge 
 the sources of the data used in my analysis and ensure proper licensing compliance.
+
+## Accessing Data
+
+The dataset used in this project is too large to include in the repository. You can download the dataset from the following link:
+
+[Download Data](link_to_data)

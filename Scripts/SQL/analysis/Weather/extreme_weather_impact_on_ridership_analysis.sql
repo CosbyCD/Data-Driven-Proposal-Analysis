@@ -15,18 +15,17 @@ SELECT
 FROM (
     SELECT
         CASE
-            WHEN wd.temp >= 80 THEN 'Hot'
-            WHEN wd.temp < 50 THEN 'Cold'
-            WHEN wd.precip > 0 THEN 'Stormy'
+            WHEN hwm.temp >= 80 THEN 'Hot'
+            WHEN hwm.temp < 50 THEN 'Cold'
+            WHEN hwm.precip > 0 THEN 'Stormy'
             ELSE 'Normal'
         END AS extreme_weather_type,
-        member_casual
+        ef.member_casual
     FROM
-        error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+        holidays_weather_merged hwm
+    LEFT JOIN error_free_records ef ON hwm.date_w = ef.date_start
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS extreme_weather_data
 GROUP BY
     extreme_weather_type

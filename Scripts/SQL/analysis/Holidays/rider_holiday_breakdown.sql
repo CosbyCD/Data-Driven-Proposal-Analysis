@@ -15,15 +15,15 @@ during these occasions.
 */
 
 SELECT
-    h.holiday_name,
+    hwm.holiday_name,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'casual' THEN 1 END), '9,999,999') AS casual_riders_count,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'member' THEN 1 END), '9,999,999') AS member_riders_count
 FROM
     error_free_records ef
-LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
 WHERE
-    h.holiday_name IS NOT NULL
+    hwm.holiday_name IS NOT NULL
 GROUP BY
-    h.holiday_name
+    hwm.holiday_name
 ORDER BY
-    h.holiday_name;
+    hwm.holiday_name;

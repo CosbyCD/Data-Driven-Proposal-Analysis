@@ -1,0 +1,73 @@
+---
+title: "Cyclistic Marketing"
+author: "Cherrie D. Cosby"
+date: "2023-08-29"
+output: html_document
+params:
+  db_host: "localhost"
+  db_port: 5432
+  db_name: "CDC_portfolio"
+  db_user: "postgres"
+  db_password: "gardner928W!"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Install packages
+install.packages("tidyverse")
+install.packages("ggplot2")
+install.packages("readr")
+install.packages("readxl")
+install.packages("rio")
+install.packages("dplyr")
+install.packages("remotes")
+install.packages("tidyr")
+install.packages("stringr")
+install.packages("lubridate")
+install.packages("shiny")
+install.packages("rmarkdown")
+install.packages("arrow")
+install.packages("feather")
+install.packages("fst")
+install.packages("hexView")
+install.packages("pzfx")
+install.packages("readODS")
+install.packages("rmatio")
+install.packages("RPostgreSQL")
+install.packages("DBI")
+update.packages()
+
+# Load packages
+library(tidyverse)
+library(ggplot2)
+library(readr)
+library(readxl)
+library(dplyr)
+library(remotes)
+library(tidyr)
+library(stringr)
+library(lubridate)
+library(shiny)
+library(rmarkdown)
+library(rio)
+library(arrow)
+library(feather)
+library(fst)
+library(hexView)
+library(pzfx)
+library(readODS)
+library(rmatio)
+library(DBI)
+library(RPostgreSQL)
+
+
+# Database connection details
+con <- dbConnect(
+  PostgreSQL(),
+  host = params$db_host,
+  port = params$db_port,
+  dbname = params$db_name,
+  user = params$db_user,
+  password = params$db_password
+)

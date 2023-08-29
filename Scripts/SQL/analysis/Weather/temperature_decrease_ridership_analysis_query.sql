@@ -12,14 +12,13 @@ ridership data and provides valuable insights into how
 temperature changes impact ridership patterns.
 */
 
-
 WITH TemperatureShifts AS (
     SELECT
-        wd.datetime AS shift_date,
-        wd.feelslike AS shift_temp,
-        LAG(wd.feelslike) OVER (ORDER BY wd.datetime) AS prev_temp,
-        LAG(wd.datetime) OVER (ORDER BY wd.datetime) AS prev_date
-    FROM weather_data wd
+        hwm.date_w AS shift_date,
+        hwm.feelslike AS shift_temp,
+        LAG(hwm.feelslike) OVER (ORDER BY hwm.date_w) AS prev_temp,
+        LAG(hwm.date_w) OVER (ORDER BY hwm.date_w) AS prev_date
+    FROM holidays_weather_merged hwm
 ),
 RidershipCounts AS (
     SELECT

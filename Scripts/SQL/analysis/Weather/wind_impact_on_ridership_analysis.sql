@@ -7,7 +7,6 @@ by categorizing wind speed into ranges. It calculates the count of casual and
 different wind speed levels influence ridership engagement.
 */
 
-
 SELECT
     wind_speed_range,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'casual' THEN 1 END), '999,999') AS casual_riders_count,
@@ -21,13 +20,12 @@ FROM (
             WHEN windspeed >= 15 AND windspeed < 20 THEN '15-19 mph'
             ELSE '20 mph and above'
         END AS wind_speed_range,
-        member_casual
+        ef.member_casual
     FROM
         error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS wind_data
 GROUP BY
     wind_speed_range

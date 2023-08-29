@@ -16,15 +16,15 @@ participation.
 
 
 SELECT
-    h.holiday_name,
+    hwm.holiday_name,
     ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END) * 100) AS avg_casual_riders_percentage,
     ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END) * 100) AS avg_member_riders_percentage
 FROM
     error_free_records ef
-LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
 WHERE
-    h.holiday_name IS NOT NULL
+    hwm.holiday_name IS NOT NULL
 GROUP BY
-    h.holiday_name
+    hwm.holiday_name
 ORDER BY
     avg_casual_riders_percentage DESC;

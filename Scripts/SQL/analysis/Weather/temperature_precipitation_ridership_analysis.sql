@@ -17,23 +17,22 @@ SELECT
 FROM (
     SELECT
         CASE
-            WHEN temp < 50 THEN 'Less than 50°F'
-            WHEN temp >= 50 AND temp < 60 THEN '50-59°F'
-            WHEN temp >= 60 AND temp < 70 THEN '60-69°F'
-            WHEN temp >= 70 AND temp < 80 THEN '70-79°F'
+            WHEN hwm.temp < 50 THEN 'Less than 50°F'
+            WHEN hwm.temp >= 50 AND hwm.temp < 60 THEN '50-59°F'
+            WHEN hwm.temp >= 60 AND hwm.temp < 70 THEN '60-69°F'
+            WHEN hwm.temp >= 70 AND hwm.temp < 80 THEN '70-79°F'
             ELSE '80°F and above'
         END AS temperature_range,
         CASE
-            WHEN wd.precip > 0 THEN 'Precipitation'
+            WHEN hwm.precip > 0 THEN 'Precipitation'
             ELSE 'No Precipitation'
         END AS precipitation_status,
-        member_casual
+        ef.member_casual
     FROM
         error_free_records ef
-    LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
-    LEFT JOIN weather_data wd ON ef.date_start = wd.datetime::date
+    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
     WHERE
-        h.holiday_name IS NOT NULL
+        hwm.holiday_name IS NOT NULL
 ) AS temp_precip_data
 GROUP BY
     temperature_range, precipitation_status

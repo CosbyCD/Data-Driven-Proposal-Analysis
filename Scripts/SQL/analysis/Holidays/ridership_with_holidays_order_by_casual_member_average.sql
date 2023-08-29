@@ -16,17 +16,17 @@ SELECT
     date_start AS date,
     day_of_year,
     name_of_day,
-    COALESCE(h.holiday_name, '') AS holiday_name,
+    COALESCE(hwm.holiday_name, '') AS holiday_name,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'casual' THEN 1 END), '999,999,999') AS casual_riders_count,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'member' THEN 1 END), '999,999,999') AS member_riders_count,
     ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), 2) AS average_casual_riders,
     ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), 2) AS average_member_riders
 FROM
     error_free_records ef
-LEFT JOIN holidays h ON ef.date_start = h.holiday_start_date
+LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
 WHERE
-    h.holiday_name <> ''
+    hwm.holiday_name <> ''
 GROUP BY
-    date_start, ef.day_of_year, ef.name_of_day, h.holiday_name
+    date_start, ef.day_of_year, ef.name_of_day, hwm.holiday_name
 ORDER BY
     average_casual_riders DESC;

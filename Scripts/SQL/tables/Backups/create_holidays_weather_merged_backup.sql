@@ -1,5 +1,5 @@
 /*
-File: create_weather_data_backup.sql
+File: create_holidays_weather_merged_backup.sql
 
 To safeguard data integrity and provide a safety net for
 potential changes, I will be generating a backup table.
@@ -15,5 +15,5 @@ reference and restoration purposes.
 */
 
 
-CREATE TABLE weather_data_backup AS
-SELECT * FROM weather_data;
+CREATE TABLE holidays_weather_merged_backup AS
+SELECT * FROM holidays_weather_merged;
