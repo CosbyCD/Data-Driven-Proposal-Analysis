@@ -17,10 +17,10 @@ FROM (
             WHEN hwm.conditions IS NULL THEN 'Unknown'
             ELSE hwm.conditions
         END AS conditions,
-        ef.member_casual
+        cd.member_casual
     FROM
-        error_free_records ef
-    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
+        combined_data cd
+    LEFT JOIN holidays_weather_merged hwm ON cd.date_start = hwm.date_w
     WHERE
         hwm.holiday_name IS NOT NULL
 ) AS weather_conditions_data

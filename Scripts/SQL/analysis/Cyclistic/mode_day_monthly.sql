@@ -26,7 +26,7 @@ WITH DayOfWeekCounts AS (
         EXTRACT(DOW FROM started_at) AS day_of_week,
         COUNT(*) AS ride_count,
         ROUND(AVG(EXTRACT(EPOCH FROM (ended_at - started_at)) / 60)::numeric, 2) AS avg_ride_length_minutes
-    FROM error_free_records
+    FROM combined_data
     GROUP BY month, user_type, EXTRACT(DOW FROM started_at)
 ),
 RankedDays AS (

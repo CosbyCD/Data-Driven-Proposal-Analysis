@@ -3,7 +3,7 @@ File: member_casual_user_stats_month.sql
 
 This SQL query calculates and presents a breakdown of member 
 and casual user counts, along with the percentage difference,
-for each month of the year. Utilizing data from the "error_free_records" 
+for each month of the year. Utilizing data from the "combined_data" 
 table, the query summarizes the counts of members and casual 
 users and computes the percentage difference between these two 
 groups. The results are presented in a formatted and organized 
@@ -17,7 +17,7 @@ WITH counts AS (
         COUNT(*) FILTER (WHERE member_casual = 'member') AS member_count,
         COUNT(*) FILTER (WHERE member_casual = 'casual') AS casual_count
     FROM
-        error_free_records
+        combined_data
     GROUP BY
         EXTRACT(MONTH FROM started_at)
 )

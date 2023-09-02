@@ -16,7 +16,7 @@ SELECT CASE
            ELSE TO_CHAR(started_at, 'HHpm')
        END AS member_ride_times,
        TO_CHAR(COUNT(*), '9,999,999') AS member_ride_counts
-FROM error_free_records
+FROM combined_data
 WHERE member_casual = 'member'
 GROUP BY member_ride_times
 ORDER BY member_ride_counts DESC;

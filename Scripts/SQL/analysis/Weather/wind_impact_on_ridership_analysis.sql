@@ -20,10 +20,10 @@ FROM (
             WHEN windspeed >= 15 AND windspeed < 20 THEN '15-19 mph'
             ELSE '20 mph and above'
         END AS wind_speed_range,
-        ef.member_casual
+        cd.member_casual
     FROM
-        error_free_records ef
-    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
+        combined_data cd
+    LEFT JOIN holidays_weather_merged hwm ON cd.date_start = hwm.date_w
     WHERE
         hwm.holiday_name IS NOT NULL
 ) AS wind_data

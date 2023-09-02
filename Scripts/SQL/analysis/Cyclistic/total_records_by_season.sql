@@ -16,7 +16,7 @@ SELECT
   END AS season,
   TO_CHAR(COUNT(*), '999,999,999') AS total_records_by_season
 FROM
-  error_free_records
+  combined_data
 GROUP BY
   season
 ORDER BY

@@ -20,10 +20,10 @@ FROM (
             WHEN hwm.precip > 0 THEN 'Stormy'
             ELSE 'Normal'
         END AS extreme_weather_type,
-        ef.member_casual
+        cd.member_casual
     FROM
         holidays_weather_merged hwm
-    LEFT JOIN error_free_records ef ON hwm.date_w = ef.date_start
+    LEFT JOIN combined_data cd ON hwm.date_w = cd.date_start
     WHERE
         hwm.holiday_name IS NOT NULL
 ) AS extreme_weather_data

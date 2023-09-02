@@ -44,7 +44,7 @@ SELECT
                                 END
                      ORDER BY COUNT(*) DESC) AS rank
     FROM
-        error_free_records
+        combined_data
     GROUP BY
         season, name_of_day, user_type
 )

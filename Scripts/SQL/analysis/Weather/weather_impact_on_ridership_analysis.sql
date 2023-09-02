@@ -44,10 +44,10 @@ FROM (
             WHEN hwm.precip IS NULL THEN NULL
             WHEN hwm.precip > 0 THEN COALESCE(hwm.preciptype, 'Other')
         END AS precipitation_type,
-        ef.member_casual
+        cd.member_casual
     FROM
-        error_free_records ef
-    LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.date_w
+        combined_data cd
+    LEFT JOIN holidays_weather_merged hwm ON cd.date_start = hwm.date_w
     WHERE
         hwm.holiday_name IS NOT NULL
 ) AS temp_precip_data

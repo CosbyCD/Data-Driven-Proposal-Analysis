@@ -3,7 +3,7 @@ File: mode_day_yearly.sql
 
 This SQL query offers a detailed exploration of ride length
 trends for "Member" and "Casual" users throughout the year.
-By analyzing the "error_free_records" dataset, it identifies the 
+By analyzing the "combined_data" dataset, it identifies the 
 day of the week with the highest ride activity and computes 
 the average ride duration in minutes for each user type on 
 that particular day. The results are accompanied by the 
@@ -30,14 +30,14 @@ FROM (
             WHEN member_casual = 'casual' THEN 'Casual'
         END AS user_type
     FROM
-        error_free_records
+        combined_data
 ) AS cd
 JOIN (
     SELECT
         name_of_day,
         EXTRACT(DOW FROM started_at) AS day_of_week
     FROM
-        error_free_records
+        combined_data
     GROUP BY
         name_of_day, EXTRACT(DOW FROM started_at)
     ORDER BY

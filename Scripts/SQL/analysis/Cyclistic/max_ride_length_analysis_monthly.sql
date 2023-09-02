@@ -3,16 +3,14 @@ File: max_ride_length_analysis_monthly.sql
 
 This query offers a comprehensive and equitable analysis of ride length
 statistics for "Member" and "Casual" users over the course of a year. 
-Leveraging the "error_free_records" dataset, the query adeptly calculates 
+Leveraging the "combined_data" dataset, the query adeptly calculates 
 total and maximum ride lengths, meticulously adjusted and normalized 
 by user count. By factoring in the user population sizes, the query 
 ensures unbiased comparisons between different user types. Furthermore, 
 the analysis is organized by month, adding a temporal dimension to the 
 insights. The resulting output effectively captures the variations in 
 ride lengths, providing a clear and meaningful assessment of user behavior
-patterns throughout the year. This query serves as a valuable tool for 
-gaining nuanced insights into ride length trends and user preferences 
-across distinct user segments.
+patterns throughout the year.
 */
 
 WITH MaxRideLengths AS (
@@ -24,7 +22,7 @@ WITH MaxRideLengths AS (
         END AS user_type,
         SUM(EXTRACT(EPOCH FROM (ended_at - started_at))) AS sum_ride_length_seconds,
         COUNT(*) AS user_count
-    FROM error_free_records
+    FROM combined_data
     GROUP BY month, member_casual
 )
 SELECT 

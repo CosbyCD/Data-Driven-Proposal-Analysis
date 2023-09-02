@@ -34,14 +34,14 @@ RidershipCounts AS (
         SELECT date_start,
                COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) AS casual_riders_count,
                COUNT(CASE WHEN member_casual = 'member' THEN 1 END) AS member_riders_count
-        FROM error_free_records
+        FROM combined_data
         GROUP BY date_start
     ) rc_shift ON ts.shift_date = rc_shift.date_start
     LEFT JOIN (
         SELECT date_start,
                COUNT(CASE WHEN member_casual = 'casual' THEN 1 END) AS casual_riders_count,
                COUNT(CASE WHEN member_casual = 'member' THEN 1 END) AS member_riders_count
-        FROM error_free_records
+        FROM combined_data
         GROUP BY date_start
     ) rc_prev ON ts.prev_date = rc_prev.date_start
     WHERE ts.prev_temp - ts.shift_temp > 10

@@ -8,7 +8,7 @@ SELECT
   EXTRACT(MONTH FROM started_at) AS month,
   TO_CHAR(COUNT(*), '999,999,999') AS total_records_by_month
 FROM
-  error_free_records
+  combined_data
 GROUP BY
   EXTRACT(MONTH FROM started_at)
 ORDER BY

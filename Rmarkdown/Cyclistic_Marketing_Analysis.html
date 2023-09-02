@@ -357,34 +357,75 @@ display: none;
 </div>
 
 
+<div id="introduction-gac_cyclistic_project" class="section level2">
+<h2>Introduction GAC_Cyclistic_project</h2>
+<p>Project Overview</p>
+<p>Welcome to the GAC_Cyclistic_project – a project focused on
+Cyclistic’s marketing strategies to convert casual riders into annual
+members. Cyclistic is a bike share program in Chicago, boasting a fleet
+of 5,824 bikes across 692 docking stations. With diverse bike
+categories, styles, and pricing plans, Cyclistic caters to a wide range
+of riders – from leisure cyclists to daily commuters.</p>
+<p>This project aims to delve into the behaviors of both annual members
+and casual riders, revealing valuable insights that will inform our
+strategic marketing approaches. Through the analysis of historical bike
+trip data and the utilization of tools such as Excel, VBA, PostgreSQL,
+R, and Tableau, we seek to answer crucial questions:</p>
+<p>How do annual members and casual riders utilize Cyclistic bikes
+differently? What are the key distinctions in usage patterns between
+these two groups? What motivates casual riders to consider becoming
+annual members? How can digital media play a role in converting casual
+riders into committed members?</p>
+<p>Our motivation for undertaking this project is rooted in a passion
+for business analytics and a desire to contribute to the transformation
+of urban mobility. By optimizing Cyclistic’s annual membership program,
+we strive to promote sustainable and eco-friendly transportation while
+providing a seamless and rewarding experience for riders.</p>
+<p>Target Audience The primary audience for this project is prospective
+employers, recruiters, and fellow data enthusiasts who seek to
+understand the practical application of data analysis in real-world
+scenarios. Our goal is to showcase a professional and skillful approach
+to business analytics, providing a tangible example of data-driven
+decision-making.</p>
+</div>
 <div id="install-packages" class="section level1">
 <h1>Install packages</h1>
 <p>install.packages(“tidyverse”) install.packages(“ggplot2”)
-install.packages(“readr”) install.packages(“readxl”)
-install.packages(“rio”) install.packages(“dplyr”)
-install.packages(“remotes”) install.packages(“tidyr”)
-install.packages(“stringr”) install.packages(“lubridate”)
-install.packages(“shiny”) install.packages(“rmarkdown”)
-install.packages(“arrow”) install.packages(“feather”)
-install.packages(“fst”) install.packages(“hexView”)
+install.packages(“dplyr”) install.packages(“remotes”)
+install.packages(“tidyr”) install.packages(“stringr”)
+install.packages(“lubridate”) install.packages(“shiny”)
+install.packages(“rmarkdown”) install.packages(“hexView”)
 install.packages(“pzfx”) install.packages(“readODS”)
-install.packages(“rmatio”) install.packages(“RPostgreSQL”)
-install.packages(“DBI”)</p>
+install.packages(“rmatio”) install.packages(“data.table”)</p>
 </div>
 <div id="load-packages" class="section level1">
 <h1>Load packages</h1>
-<p>library(tidyverse) library(ggplot2) library(readr) library(readxl)
-library(dplyr) library(remotes) library(tidyr) library(stringr)
-library(lubridate) library(shiny) library(rmarkdown) library(rio)
-library(arrow) library(feather) library(fst) library(hexView)
-library(pzfx) library(readODS) library(rmatio) library(DBI)
-library(RPostgreSQL)</p>
+<p>library(tidyverse) library(ggplot2) library(dplyr) library(remotes)
+library(tidyr) library(stringr) library(lubridate) library(shiny)
+library(rmarkdown) library(hexView) library(pzfx) library(readODS)
+library(rmatio) library(data.table)</p>
+<!-- Data Loading -->
 </div>
-<div id="database-connection-details" class="section level1">
-<h1>Database connection details</h1>
-<p>con &lt;- dbConnect( PostgreSQL(), host = params<span class="math inline">\(db_host,  port = params\)</span>db_port, dbname =
-params<span class="math inline">\(db_name,  user =
-params\)</span>db_user, password = params$db_password )</p>
+<div id="load-data-from-urls" class="section level1 custom-block">
+<h1>Load data from URLs</h1>
+<p>error_free_records &lt;- read.csv(“<a href="https://www.dropbox.com/scl/fi/xeopvji3b89su8ai7ux9l/holiday_weather_merge.csv?rlkey=pdvwumqbhw4mega1exnpx8p1t&amp;dl=0" class="uri">https://www.dropbox.com/scl/fi/xeopvji3b89su8ai7ux9l/holiday_weather_merge.csv?rlkey=pdvwumqbhw4mega1exnpx8p1t&amp;dl=0</a>”)</p>
+<p>holiday_weather_merge &lt;- read.csv(“<a href="https://www.dropbox.com/scl/fi/xeopvji3b89su8ai7ux9l/holiday_weather_merge.csv?rlkey=pdvwumqbhw4mega1exnpx8p1t&amp;dl=0" class="uri">https://www.dropbox.com/scl/fi/xeopvji3b89su8ai7ux9l/holiday_weather_merge.csv?rlkey=pdvwumqbhw4mega1exnpx8p1t&amp;dl=0</a>”)</p>
+<p>This data is preprocessed, clean, and ready for analysis. To follow
+the steps taken to get to this point, please refer to the documentation
+available in my GIT repo
+(“<a href="https://github.com/CosbyCD/GAC_Cyclistic_project/preprocessing.md">https://github.com/CosbyCD/GAC_Cyclistic_project/preprocessing.md</a>”)
+which walks you through from downloading the raw data into a finished
+product ready for use in R.</p>
+</div>
+<div id="create-segments-based-on-member_casual-column" class="section level1">
+<h1>Create segments based on member_casual column</h1>
+<p>segmented_data &lt;- error_free_records %&gt;%
+group_by(member_casual) %&gt;% summarise(average_ride_length =
+mean(ride_length, na.rm = TRUE)) # Create a bar plot ggplot(data =
+segmented_data, aes(x = member_casual, y = average_ride_length)) +
+geom_bar(stat = “identity”, fill = “steelblue”) + labs(title = “Average
+Ride Length by Member Type”, x = “Member Type”, y = “Average Ride
+Length”)</p>
 </div>
 
 

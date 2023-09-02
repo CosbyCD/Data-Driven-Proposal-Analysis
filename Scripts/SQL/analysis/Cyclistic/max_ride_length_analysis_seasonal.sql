@@ -10,10 +10,7 @@ The values are normalized by user counts, ensuring equitable
 comparisons and eliminating bias from varying user populations. 
 This approach provides impartial insights into ride length 
 behaviors, enabling a nuanced understanding of user segments
-and their interactions with the platform. The query's output
-provides a holistic evaluation of ride experiences across 
-seasons, contributing to a comprehensive overview of user
-engagement patterns.
+and their interactions with the platform.
 */
 
 WITH MaxRideLengths AS (
@@ -30,7 +27,7 @@ WITH MaxRideLengths AS (
         END AS season,
         SUM(EXTRACT(EPOCH FROM (ended_at - started_at))) AS sum_ride_length_seconds,
         COUNT(*) AS user_count
-    FROM error_free_records
+    FROM combined_data
     GROUP BY user_type, season
 )
 SELECT 

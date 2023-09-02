@@ -22,11 +22,11 @@ SELECT
     ROUND(AVG(CASE WHEN member_casual = 'casual' THEN 1 ELSE 0 END), 2) AS average_casual_riders,
     ROUND(AVG(CASE WHEN member_casual = 'member' THEN 1 ELSE 0 END), 2) AS average_member_riders
 FROM
-    error_free_records ef
-LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
+    combined_data cd
+LEFT JOIN holidays_weather_merged hwm ON cd.date_start = hwm.holiday_start_date
 WHERE
     hwm.holiday_name <> ''
 GROUP BY
-    date_start, ef.day_of_year, ef.name_of_day, hwm.holiday_name
+    date_start, cd.day_of_year, cd.name_of_day, hwm.holiday_name
 ORDER BY
     average_casual_riders DESC;

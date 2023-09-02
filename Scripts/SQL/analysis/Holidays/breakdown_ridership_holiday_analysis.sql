@@ -3,7 +3,7 @@ File: breakdown_ridership_holiday_analysis.sql
 
 This query calculates and presents statistics related to 
 various holidays and their impact on bike ridership. It utilizes the
-"error_free_records" dataset to determine the average number of casual and
+"combined_data" dataset to determine the average number of casual and
 member riders, as well as the total ridership, on each holiday. The 
 holidays are dynamically calculated based on their respective dates 
 and specific conditions. The results are grouped by holiday name and
@@ -20,9 +20,9 @@ WITH holiday_dates AS (
         DATE_TRUNC('year', hwm.date_w) + INTERVAL '0 day' AS holiday_date,
         DATE_PART('doy', hwm.date_w) AS day_of_year,
         hwm.date_w,
-        ef.member_casual
+        cd.member_casual
     FROM holidays_weather_merged hwm
-    JOIN error_free_records ef ON hwm.date_w = ef.date_start
+    JOIN combined_data cd ON hwm.date_w = cd.date_start
     WHERE EXTRACT(MONTH FROM hwm.date_w) = 1 AND EXTRACT(DAY FROM hwm.date_w) = 1
 	    
     UNION ALL
@@ -36,7 +36,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 1 AND EXTRACT(DAY FROM started_at) BETWEEN 15 AND 21
     
     UNION ALL
@@ -50,7 +50,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 2 AND EXTRACT(DAY FROM started_at) BETWEEN 15 AND 21
     
     UNION ALL
@@ -61,7 +61,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 3 AND EXTRACT(DAY FROM started_at) BETWEEN 22 AND 31
     
     UNION ALL
@@ -75,7 +75,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 5 AND EXTRACT(DAY FROM started_at) BETWEEN 24 AND 31
     
     UNION ALL
@@ -86,7 +86,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 7 AND EXTRACT(DAY FROM started_at) = 4
     
     UNION ALL
@@ -100,7 +100,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 10 AND EXTRACT(DAY FROM started_at) BETWEEN 8 AND 14
     
     UNION ALL
@@ -111,7 +111,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 10 AND EXTRACT(DAY FROM started_at) = 31
     
     UNION ALL
@@ -122,7 +122,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 11 AND EXTRACT(DAY FROM started_at) = 11
     
     UNION ALL
@@ -148,7 +148,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 11 AND EXTRACT(DAY FROM started_at) BETWEEN 23 AND 29
     
     UNION ALL
@@ -159,7 +159,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 12 AND EXTRACT(DAY FROM started_at) = 25
     
     UNION ALL
@@ -173,7 +173,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 9 AND EXTRACT(DAY FROM started_at) = 1
     
     -- St Patrick's Day
@@ -184,7 +184,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 3 AND EXTRACT(DAY FROM started_at) = 17
     
     -- Cinco de Mayo
@@ -195,7 +195,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 5 AND EXTRACT(DAY FROM started_at) = 5
     
     -- Bastille Day
@@ -206,7 +206,7 @@ WITH holiday_dates AS (
         DATE_PART('doy', started_at) AS day_of_year,
         started_at AS start_date,
         member_casual
-    FROM error_free_records
+    FROM combined_data
     WHERE EXTRACT(MONTH FROM started_at) = 7 AND EXTRACT(DAY FROM started_at) = 14
 	)
 

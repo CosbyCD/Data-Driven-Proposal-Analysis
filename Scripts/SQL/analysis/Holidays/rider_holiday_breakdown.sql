@@ -19,8 +19,8 @@ SELECT
     TO_CHAR(COUNT(CASE WHEN member_casual = 'casual' THEN 1 END), '9,999,999') AS casual_riders_count,
     TO_CHAR(COUNT(CASE WHEN member_casual = 'member' THEN 1 END), '9,999,999') AS member_riders_count
 FROM
-    error_free_records ef
-LEFT JOIN holidays_weather_merged hwm ON ef.date_start = hwm.holiday_start_date
+    combined_data cd
+LEFT JOIN holidays_weather_merged hwm ON cd.date_start = hwm.holiday_start_date
 WHERE
     hwm.holiday_name IS NOT NULL
 GROUP BY

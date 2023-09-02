@@ -25,7 +25,7 @@ FROM crosstab(
         member_casual,
         TO_CHAR(COUNT(*), ''9,999,999'') AS ride_count
     FROM
-        error_free_records
+        combined_data
     GROUP BY
         month_number, member_casual
     ORDER BY
