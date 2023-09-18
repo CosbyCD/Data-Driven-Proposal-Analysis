@@ -1,6 +1,7 @@
 GAC_Cyclistic_project
 
 Project Overview
+
 Introducing the GAC_Cyclistic_project – a dedicated initiative focused on enhancing Cyclistic's
 marketing strategies to engage casual riders and encourage their transition into annual members.
 Cyclistic, a prominent bike share program in Chicago, boasts a robust fleet of 5,824 bikes 
@@ -20,6 +21,7 @@ How can digital media platforms contribute to the conversion of casual riders in
 dedicated, long-term members?
 
 Key Features
+
 Contributions and Future Development
 While I am not currently seeking external contributions, I am committed to 
 refining and expanding the project based on my personal insights and experiences. 
@@ -27,6 +29,7 @@ Future updates may include enhanced visualizations, additional analyses, and dee
 insights into Cyclistic's marketing strategies.
 
 Acknowledgments
+
 I would like to express my gratitude to Coursera and Google for providing the 
 foundational instructions and resources for this project. Additionally, I acknowledge 
 the sources of the data used in my analysis and ensure proper licensing compliance.
