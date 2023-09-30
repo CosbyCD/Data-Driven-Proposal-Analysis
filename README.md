@@ -1,13 +1,14 @@
-GAC_Cyclistic_project
+Google Data Analytics Certificate through Coursera
+Cyclistic bike share marketing conversion project
 
 Project Overview
 
-Introducing the GAC_Cyclistic_project – a dedicated initiative focused on enhancing Cyclistic's
-marketing strategies to engage casual riders and encourage their transition into annual members.
-Cyclistic, a prominent bike share program in Chicago, boasts a robust fleet of 5,824 bikes 
-stationed across 692 convenient docking points. With an array of bike categories, styles,
-and flexible pricing plans, Cyclistic caters to a diverse spectrum of riders, ranging from
-leisurely cyclists to daily commuters.
+Introducing the Cyclistic bike share marketing conversion project – a dedicated initiative
+focused on enhancing Cyclistic's marketing strategies to engage casual riders and encourage 
+their transition into annual members. Cyclistic, a prominent bike share program in Chicago, 
+boasts a robust fleet of 5,824 bikes stationed across 692 convenient docking points. With 
+an array of bike categories, styles, and flexible pricing plans, Cyclistic caters to a
+diverse spectrum of riders, ranging from leisurely cyclists to daily commuters.
 
 This endeavor seeks to gain comprehensive insights into the behaviors of both annual members
 and casual riders. These invaluable observations will guide our strategic marketing endeavors.
